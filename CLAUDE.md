@@ -20,10 +20,14 @@
 
 ## Current stage
 
-Stage 0 (bootstrap) is complete: Next.js App Router, TypeScript strict, Tailwind
-CSS, ESLint, Vitest, a minimal landing page, and one real business-logic module
-(`lib/analysis/median.ts`) with real tests.
+Stage 0 (bootstrap), G1A (YouTube channel resolution: `lib/youtube/*`), and G1B
+(Channel Analyzer end-to-end: uploads playlist + videos.list + median/outlier
+report, `POST /api/analyzer`, `/analyzer` page) are complete. All API access
+goes through `lib/youtube/request.ts` (server-only, API key via
+`x-goog-api-key` header, never in the URL). No database is used yet — G1B
+computes everything per-request from live YouTube data.
 
-Not yet implemented: Supabase, database connection, YouTube API, authentication,
-dashboard, analyzer, watchlist, API routes, deployment. Do not start any of these
-until a later stage is explicitly approved.
+Not yet implemented: Supabase, database connection, authentication, dashboard,
+watchlist, opportunity finder, idea generator, AI API, caching, rate limiting,
+deployment. Do not start any of these until a later stage is explicitly
+approved.
