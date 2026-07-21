@@ -42,3 +42,27 @@ export type ChannelCompareEntry = ChannelCompareSuccess | ChannelCompareFailure;
 export interface CompareChannelsResult {
   readonly results: readonly ChannelCompareEntry[];
 }
+
+export interface OpportunityFeedItem {
+  readonly videoId: string;
+  readonly title: string;
+  readonly thumbnailUrl: string | null;
+  readonly publishedAt: string;
+  readonly durationSeconds: number;
+  readonly viewCount: number;
+  readonly channelId: string;
+  readonly channelTitle: string;
+  readonly channelMedianViews: number;
+  readonly outlierRatio: number;
+  readonly outlierLevel: "outlier" | "strong-outlier";
+}
+
+export interface OpportunityFeedFailure {
+  readonly input: string;
+  readonly error: { readonly code: string; readonly message: string };
+}
+
+export interface OpportunityFeedResult {
+  readonly items: readonly OpportunityFeedItem[];
+  readonly failures: readonly OpportunityFeedFailure[];
+}
