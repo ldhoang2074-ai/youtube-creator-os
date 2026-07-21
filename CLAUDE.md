@@ -20,12 +20,14 @@
 
 ## Current stage
 
-Stage 0 (bootstrap), G1A (YouTube channel resolution: `lib/youtube/*`), and G1B
-(Channel Analyzer end-to-end: uploads playlist + videos.list + median/outlier
-report, `POST /api/analyzer`, `/analyzer` page) are complete. All API access
-goes through `lib/youtube/request.ts` (server-only, API key via
-`x-goog-api-key` header, never in the URL). No database is used yet — G1B
-computes everything per-request from live YouTube data.
+Stage 0 (bootstrap), G1A (YouTube channel resolution: `lib/youtube/*`), G1B
+(Channel Analyzer: uploads playlist + videos.list + median/outlier report,
+`POST /api/analyzer`, `/analyzer` page), and G1C (Channel Compare: analyzes
+2-5 channels independently via `Promise.allSettled`, `POST /api/compare`,
+`/compare` page) are complete. All API access goes through
+`lib/youtube/request.ts` (server-only, API key via `x-goog-api-key` header,
+never in the URL). No database is used yet — everything is computed
+per-request from live YouTube data.
 
 Not yet implemented: Supabase, database connection, authentication, dashboard,
 watchlist, opportunity finder, idea generator, AI API, caching, rate limiting,

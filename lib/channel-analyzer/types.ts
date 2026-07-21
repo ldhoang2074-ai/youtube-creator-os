@@ -24,3 +24,21 @@ export interface ChannelAnalysisReport {
   readonly analyzedVideoCount: number;
   readonly videos: readonly VideoAnalysis[];
 }
+
+export interface ChannelCompareSuccess {
+  readonly input: string;
+  readonly status: "success";
+  readonly report: ChannelAnalysisReport & { readonly outlierRate: number | null };
+}
+
+export interface ChannelCompareFailure {
+  readonly input: string;
+  readonly status: "error";
+  readonly error: { readonly code: string; readonly message: string };
+}
+
+export type ChannelCompareEntry = ChannelCompareSuccess | ChannelCompareFailure;
+
+export interface CompareChannelsResult {
+  readonly results: readonly ChannelCompareEntry[];
+}
