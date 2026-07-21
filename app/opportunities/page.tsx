@@ -1,6 +1,14 @@
 import { OpportunityFeedClient } from "@/components/opportunity-feed/OpportunityFeedClient";
+import { parseChannelQuery } from "@/lib/opportunities/parse-channel-query";
 
-export default function OpportunitiesPage() {
+interface OpportunitiesPageProps {
+  readonly searchParams: Promise<{ readonly channel?: string | string[] }>;
+}
+
+export default async function OpportunitiesPage({ searchParams }: OpportunitiesPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const initialInputs = parseChannelQuery(resolvedSearchParams.channel);
+
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-6 py-12">
       <div>
@@ -18,7 +26,7 @@ export default function OpportunitiesPage() {
           recent median, not as an absolute comparison between channels.
         </p>
       </div>
-      <OpportunityFeedClient />
+      <OpportunityFeedClient initialInputs={initialInputs} />
     </div>
   );
 }

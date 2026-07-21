@@ -58,13 +58,28 @@ npm run build      # Production build
   recent videos, so the feed reflects that analyzed set — it is not an AI
   recommendation and not a measurement of growth or change over time.
   Complete.
+- **G1E** — Research Workspace (`/workspace`): manually save an Opportunity
+  Feed result (channels + result) to this browser's `localStorage`, and
+  re-open its channels in `/opportunities` to analyze fresh (the user must
+  click "Find opportunities" themselves — nothing runs automatically).
+  Viewing a saved snapshot does not call `/api/opportunities` or the
+  YouTube Data API, and does not load the saved videos' thumbnails; it only
+  reads from `localStorage`. Navigation (opening a video on YouTube, or
+  opening the channels in Opportunity Feed) only happens when the user
+  explicitly clicks a link. Saved research stays only in this browser (no
+  cloud sync, no account) and is a manually saved snapshot, not live data,
+  automatic tracking, or growth tracking. `POST /api/opportunities` is the
+  only API call this feature can trigger, and only when the user explicitly
+  re-runs the analysis. Complete.
 
 All YouTube API access goes through `lib/youtube/request.ts` (server-only,
 API key sent via the `x-goog-api-key` header, never in the URL, never
-exposed to the browser).
+exposed to the browser). No API key or other secret is ever written to
+`localStorage`.
 
 ## Not yet implemented
 
-Supabase, database connection, authentication, dashboard, watchlist,
-idea generator, AI API, caching, and rate limiting. These are planned for
-later, separately approved stages.
+Supabase, database connection, authentication, dashboard, watchlist (ongoing
+tracking of channels), cloud sync, time-series/growth tracking, idea
+generator, AI API, caching, and rate limiting. These are planned for later,
+separately approved stages.
