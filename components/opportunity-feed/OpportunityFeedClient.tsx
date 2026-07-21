@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import type { OpportunityFeedResult } from "@/lib/channel-analyzer/types";
+import { SaveResearchButton } from "@/components/workspace/SaveResearchButton";
 import { OpportunityFeedTable } from "./OpportunityFeedTable";
 
 interface ApiErrorBody {
@@ -30,10 +31,17 @@ function isOpportunityFeedResult(value: unknown): value is OpportunityFeedResult
   return Array.isArray(candidate.items) && Array.isArray(candidate.failures);
 }
 
-export function OpportunityFeedClient() {
-  const [rawInput, setRawInput] = useState("");
+interface OpportunityFeedClientProps {
+  readonly initialInputs?: readonly string[];
+}
+
+export function OpportunityFeedClient({ initialInputs }: OpportunityFeedClientProps) {
+  const [rawInput, setRawInput] = useState(() =>
+    initialInputs && initialInputs.length > 0 ? initialInputs.join("\n") : "",
+  );
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<OpportunityFeedResult | null>(null);
+  const [successfulInputs, setSuccessfulInputs] = useState<readonly string[] | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -50,12 +58,14 @@ export function OpportunityFeedClient() {
     if (inputs.length < MIN_CHANNELS) {
       setStatus("error");
       setResult(null);
+      setSuccessfulInputs(null);
       setErrorMessage(`Enter at least ${MIN_CHANNELS} channels (one per line).`);
       return;
     }
     if (inputs.length > MAX_CHANNELS) {
       setStatus("error");
       setResult(null);
+      setSuccessfulInputs(null);
       setErrorMessage(`Enter at most ${MAX_CHANNELS} channels (one per line).`);
       return;
     }
@@ -63,6 +73,7 @@ export function OpportunityFeedClient() {
     setStatus("loading");
     setErrorMessage(null);
     setResult(null);
+    setSuccessfulInputs(null);
 
     try {
       const response = await fetch("/api/opportunities", {
@@ -96,6 +107,9 @@ export function OpportunityFeedClient() {
       }
 
       setResult(json);
+      // Captured from this exact request's closure — never re-read from
+      // rawInput later, since the user may have edited the textarea since.
+      setSuccessfulInputs(inputs);
       setStatus("success");
     } catch {
       setStatus("error");
@@ -138,6 +152,10 @@ export function OpportunityFeedClient() {
 
       {status === "success" && result ? (
         <div className="flex flex-col gap-4">
+          {successfulInputs ? (
+            <SaveResearchButton inputs={successfulInputs} result={result} />
+          ) : null}
+
           {result.items.length > 0 ? (
             <OpportunityFeedTable items={result.items} />
           ) : result.failures.length === 0 ? (

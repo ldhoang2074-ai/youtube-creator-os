@@ -27,9 +27,10 @@ function buildYoutubeWatchUrl(videoId: string): string {
 
 interface OpportunityFeedTableProps {
   readonly items: readonly OpportunityFeedItem[];
+  readonly showThumbnails?: boolean;
 }
 
-export function OpportunityFeedTable({ items }: OpportunityFeedTableProps) {
+export function OpportunityFeedTable({ items, showThumbnails = true }: OpportunityFeedTableProps) {
   return (
     <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
       <table className="w-full min-w-[860px] text-left text-sm">
@@ -58,16 +59,18 @@ export function OpportunityFeedTable({ items }: OpportunityFeedTableProps) {
                     aria-label={`Open ${item.title} on YouTube`}
                     className="flex items-center gap-2"
                   >
-                    {item.thumbnailUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={item.thumbnailUrl}
-                        alt=""
-                        className="h-9 w-16 shrink-0 rounded object-cover"
-                      />
-                    ) : (
-                      <div className="h-9 w-16 shrink-0 rounded bg-zinc-200 dark:bg-zinc-800" />
-                    )}
+                    {showThumbnails ? (
+                      item.thumbnailUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={item.thumbnailUrl}
+                          alt=""
+                          className="h-9 w-16 shrink-0 rounded object-cover"
+                        />
+                      ) : (
+                        <div className="h-9 w-16 shrink-0 rounded bg-zinc-200 dark:bg-zinc-800" />
+                      )
+                    ) : null}
                     <span className="line-clamp-2 text-zinc-950 underline-offset-2 hover:underline dark:text-zinc-50">
                       {item.title}
                     </span>

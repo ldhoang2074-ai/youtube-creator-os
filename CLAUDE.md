@@ -24,14 +24,21 @@ Stage 0 (bootstrap), G1A (YouTube channel resolution: `lib/youtube/*`), G1B
 (Channel Analyzer: uploads playlist + videos.list + median/outlier report,
 `POST /api/analyzer`, `/analyzer` page), G1C (Channel Compare: analyzes 2-5
 channels independently via `Promise.allSettled`, `POST /api/compare`,
-`/compare` page), and G1D (Opportunity Feed: pools videos at >=2x each
-channel's own median from 2-5 channels via `compareChannels`, deduplicated
-by videoId, deterministically sorted, `POST /api/opportunities`,
-`/opportunities` page) are complete. All API access goes through
+`/compare` page), G1D (Opportunity Feed: pools videos at >=2x each channel's
+own median from 2-5 channels via `compareChannels`, deduplicated by videoId,
+deterministically sorted, `POST /api/opportunities`, `/opportunities` page),
+and G1E (Research Workspace: client-only `localStorage` persistence of
+manually saved Opportunity Feed snapshots, `/workspace` page, no server
+endpoint of its own) are complete. All API access goes through
 `lib/youtube/request.ts` (server-only, API key via `x-goog-api-key` header,
 never in the URL). No database is used yet — everything is computed
-per-request from live YouTube data.
+per-request from live YouTube data. `POST /api/opportunities` is only ever
+called when the user explicitly runs or re-runs an analysis (from
+`/opportunities` directly, or via "Open these channels in Opportunity Feed"
+from `/workspace` followed by the user clicking "Find opportunities"
+themselves) — never automatically.
 
 Not yet implemented: Supabase, database connection, authentication, dashboard,
-watchlist, idea generator, AI API, caching, rate limiting, deployment. Do not
-start any of these until a later stage is explicitly approved.
+watchlist (ongoing tracking), cloud sync, time-series/growth tracking, idea
+generator, AI API, caching, rate limiting, deployment. Do not start any of
+these until a later stage is explicitly approved.
