@@ -19,9 +19,9 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000). No environment variables
 are required to install, run `npm run dev`, or build the app.
 
-To exercise Channel Analyzer or Channel Compare against real YouTube data,
-create a `.env.local` file (never committed — already covered by
-`.gitignore`) with:
+To exercise Channel Analyzer, Channel Compare, or the Opportunity Feed
+against real YouTube data, create a `.env.local` file (never committed —
+already covered by `.gitignore`) with:
 
 ```bash
 YOUTUBE_API_KEY=your-own-key-here
@@ -51,6 +51,13 @@ npm run build      # Production build
   views, analyzed videos, recent-video outlier rate). Each channel is
   analyzed independently — one channel failing does not block the others.
   Complete.
+- **G1D** — Opportunity Feed (`/opportunities`, `POST /api/opportunities`):
+  pools the videos from 2 to 5 channels that reached at least 2× their own
+  channel's median views, deduplicated by video ID, into a single
+  deterministically-sorted feed. Each channel only analyzes its 25 most
+  recent videos, so the feed reflects that analyzed set — it is not an AI
+  recommendation and not a measurement of growth or change over time.
+  Complete.
 
 All YouTube API access goes through `lib/youtube/request.ts` (server-only,
 API key sent via the `x-goog-api-key` header, never in the URL, never
@@ -59,5 +66,5 @@ exposed to the browser).
 ## Not yet implemented
 
 Supabase, database connection, authentication, dashboard, watchlist,
-opportunity finder, idea generator, AI API, caching, and rate limiting.
-These are planned for later, separately approved stages.
+idea generator, AI API, caching, and rate limiting. These are planned for
+later, separately approved stages.
