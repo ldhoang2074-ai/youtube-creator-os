@@ -10,7 +10,9 @@ import {
   type ListSessionsResult,
   type StorageHost,
 } from "@/lib/workspace/storage";
+import { analyzeTitlePatterns } from "@/lib/title-patterns/analyze-title-patterns";
 import { OpportunityFeedTable } from "@/components/opportunity-feed/OpportunityFeedTable";
+import { TitlePatternPanel } from "@/components/title-patterns/TitlePatternPanel";
 
 const SERVER_SNAPSHOT: ListSessionsResult = { ok: true, sessions: [], skippedCount: 0 };
 const STORAGE_UNAVAILABLE_SNAPSHOT: ListSessionsResult = {
@@ -268,6 +270,10 @@ export function WorkspaceClient() {
                     No recent analyzed videos reached the 2× outlier threshold.
                   </div>
                 )}
+
+                {session.result.items.length > 0 ? (
+                  <TitlePatternPanel report={analyzeTitlePatterns(session.result.items)} />
+                ) : null}
 
                 {session.result.failures.length > 0 ? (
                   <ul className="flex flex-col gap-2">
