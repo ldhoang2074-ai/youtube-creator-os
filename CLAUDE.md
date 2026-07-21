@@ -27,9 +27,15 @@ channels independently via `Promise.allSettled`, `POST /api/compare`,
 `/compare` page), G1D (Opportunity Feed: pools videos at >=2x each channel's
 own median from 2-5 channels via `compareChannels`, deduplicated by videoId,
 deterministically sorted, `POST /api/opportunities`, `/opportunities` page),
-and G1E (Research Workspace: client-only `localStorage` persistence of
+G1E (Research Workspace: client-only `localStorage` persistence of
 manually saved Opportunity Feed snapshots, `/workspace` page, no server
-endpoint of its own) are complete. All API access goes through
+endpoint of its own), and G1F (Deterministic Title Pattern Finder:
+`lib/title-patterns/*`, `components/title-patterns/TitlePatternPanel.tsx`,
+detects repeated words/bigrams/openings/endings/numbers/question-marks in
+the titles of an already-computed Opportunity Feed result, shown on both
+the live `/opportunities` result and saved `/workspace` snapshots, no new
+API endpoint, no AI, no additional YouTube API request) are complete. All
+API access goes through
 `lib/youtube/request.ts` (server-only, API key via `x-goog-api-key` header,
 never in the URL). No database is used yet — everything is computed
 per-request from live YouTube data. `POST /api/opportunities` is only ever

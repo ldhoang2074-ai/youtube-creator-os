@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import type { OpportunityFeedResult } from "@/lib/channel-analyzer/types";
+import { analyzeTitlePatterns } from "@/lib/title-patterns/analyze-title-patterns";
 import { SaveResearchButton } from "@/components/workspace/SaveResearchButton";
+import { TitlePatternPanel } from "@/components/title-patterns/TitlePatternPanel";
 import { OpportunityFeedTable } from "./OpportunityFeedTable";
 
 interface ApiErrorBody {
@@ -43,6 +45,11 @@ export function OpportunityFeedClient({ initialInputs }: OpportunityFeedClientPr
   const [result, setResult] = useState<OpportunityFeedResult | null>(null);
   const [successfulInputs, setSuccessfulInputs] = useState<readonly string[] | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const titlePatternReport = useMemo(
+    () => analyzeTitlePatterns(result?.items ?? []),
+    [result],
+  );
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -162,6 +169,10 @@ export function OpportunityFeedClient({ initialInputs }: OpportunityFeedClientPr
             <div className="rounded-md border border-dashed border-zinc-300 px-4 py-8 text-center text-sm text-zinc-500 dark:border-zinc-700">
               No recent analyzed videos reached the 2× outlier threshold.
             </div>
+          ) : null}
+
+          {status === "success" && result !== null && result.items.length > 0 ? (
+            <TitlePatternPanel report={titlePatternReport} />
           ) : null}
 
           {result.failures.length > 0 ? (
