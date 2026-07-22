@@ -81,7 +81,14 @@ const youtubeVideoItemSchema = z.object({
     thumbnails: youtubeThumbnailsSchema,
   }),
   contentDetails: z.object({
-    duration: z.string(),
+    // Normally always present, but YouTube's videos.list has been observed
+    // to omit this field for individual items while every sibling
+    // contentDetails field (dimension, definition, caption, ...) is still
+    // present and well-formed. Optional here so one video missing its
+    // duration doesn't fail schema validation for the whole response;
+    // lib/channel-analyzer/analyze-channel.ts drops that single video
+    // rather than fabricating a duration for it.
+    duration: z.string().optional(),
   }),
   statistics: z.object({
     viewCount: z.string().optional(),

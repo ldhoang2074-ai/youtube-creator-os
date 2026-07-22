@@ -242,6 +242,46 @@ describe("analyzeChannel", () => {
     expect(report.analyzedVideoCount).toBe(0);
   });
 
+  it("drops a video item missing contentDetails.duration, preserving order and excluding it from the median", async () => {
+    // Observed against a real channel: videos.list can return an item with
+    // every other contentDetails field present but no `duration`. It must
+    // be dropped like a deleted/private video, never fabricated as 0s, and
+    // must not contaminate the median even though it has a valid viewCount.
+    process.env.YOUTUBE_API_KEY = "test-key";
+    const fetchImpl = createFetchImpl({
+      channels: channelResponseBody,
+      playlistItems: () => playlistResponseBody(["vidA", "vidB", "vidC"]),
+      videos: () => ({
+        items: [
+          videoItem("vidA", { statistics: { viewCount: "100" } }),
+          videoItem("vidB", { contentDetails: {}, statistics: { viewCount: "999999" } }),
+          videoItem("vidC", { statistics: { viewCount: "300" } }),
+        ],
+      }),
+    });
+
+    const report = await analyzeChannel(VALID_CHANNEL_ID, { fetchImpl });
+
+    expect(report.videos.map((v) => v.videoId)).toEqual(["vidA", "vidC"]);
+    expect(report.analyzedVideoCount).toBe(2);
+    expect(report.medianViews).toBe(200); // median of [100, 300]; vidB's 999999 excluded
+  });
+
+  it("throws INVALID_RESPONSE_SCHEMA when a video's contentDetails.duration is present but malformed", async () => {
+    process.env.YOUTUBE_API_KEY = "test-key";
+    const fetchImpl = createFetchImpl({
+      channels: channelResponseBody,
+      playlistItems: () => playlistResponseBody(["vidA"]),
+      videos: () => ({
+        items: [videoItem("vidA", { contentDetails: { duration: 60 }, statistics: { viewCount: "100" } })],
+      }),
+    });
+
+    const error = await captureError(() => analyzeChannel(VALID_CHANNEL_ID, { fetchImpl }));
+
+    expect(error.code).toBe("INVALID_RESPONSE_SCHEMA");
+  });
+
   it("returns null for likeCount/commentCount when missing, without throwing", async () => {
     process.env.YOUTUBE_API_KEY = "test-key";
     const fetchImpl = createFetchImpl({
