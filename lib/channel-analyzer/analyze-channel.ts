@@ -14,6 +14,16 @@ const MAX_VIDEOS = 25;
 
 export type AnalyzeChannelOptions = YoutubeRequestOptions;
 
+/**
+ * A YoutubeVideoItem narrowed to only the shape actually usable by this
+ * module: contentDetails.duration is optional on the wire (see
+ * lib/youtube/schemas.ts), but every video reaching `videos` below must
+ * have one, since durationSeconds is never fabricated.
+ */
+type VideoItemWithDuration = YoutubeVideoItem & {
+  readonly contentDetails: { readonly duration: string };
+};
+
 export async function analyzeChannel(
   input: string,
   options: AnalyzeChannelOptions = {},
@@ -40,11 +50,16 @@ export async function analyzeChannel(
 
   // videos.list gives no guarantee of order, completeness, or uniqueness
   // relative to orderedIds — reconcile explicitly by id, then re-order by
-  // the uploads-playlist order. Missing videos (deleted/private) are
-  // silently dropped, never fabricated.
+  // the uploads-playlist order. Missing videos (deleted/private) and
+  // videos YouTube returned without a contentDetails.duration are silently
+  // dropped, never fabricated — a video with no known duration cannot be
+  // displayed or analyzed as if its duration were 0 seconds.
   const orderedVideoItems = orderedIds
     .map((id) => videoById.get(id))
-    .filter((item): item is YoutubeVideoItem => item !== undefined);
+    .filter(
+      (item): item is VideoItemWithDuration =>
+        item !== undefined && item.contentDetails.duration !== undefined,
+    );
 
   const parsedViewCounts = orderedVideoItems.map((item) =>
     parseSafeYoutubeCount(item.statistics.viewCount),
