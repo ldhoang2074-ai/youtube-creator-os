@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
+import { flushSync } from "react-dom";
 import {
   getPageMetadata,
   isNavigationItemActive,
@@ -17,7 +18,7 @@ interface AppShellProps {
 
 interface ProductNavigationProps {
   readonly pathname: string;
-  readonly onNavigate?: () => void;
+  readonly onNavigate?: (href: string) => void;
 }
 
 const DRAWER_FOCUSABLE_SELECTOR = 'a[href], button:not([disabled])';
@@ -59,7 +60,25 @@ function ProductNavigation({ pathname, onNavigate }: ProductNavigationProps) {
                       href={item.href}
                       aria-current={active ? "page" : undefined}
                       className={itemClassName}
-                      onClick={onNavigate}
+                      onClick={(event: MouseEvent<HTMLAnchorElement>) => {
+                        if (onNavigate === undefined) {
+                          return;
+                        }
+
+                        if (
+                          event.defaultPrevented ||
+                          event.button !== 0 ||
+                          event.metaKey ||
+                          event.ctrlKey ||
+                          event.shiftKey ||
+                          event.altKey
+                        ) {
+                          return;
+                        }
+
+                        event.preventDefault();
+                        onNavigate(item.href as string);
+                      }}
                     >
                       <span>{item.label}</span>
                     </Link>
@@ -96,11 +115,53 @@ function Brand() {
 
 export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false);
   const openButtonRef = useRef<HTMLButtonElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const drawerRef = useRef<HTMLElement | null>(null);
   const previouslyFocusedElementRef = useRef<HTMLElement | null>(null);
+  const shouldRestoreFocusRef = useRef(true);
+  const mobileNavigationOpenRef = useRef(false);
+
+  const removeFocusFromDrawer = useCallback(() => {
+    const activeElement = document.activeElement;
+
+    if (activeElement instanceof HTMLElement && drawerRef.current?.contains(activeElement)) {
+      activeElement.blur();
+    }
+  }, []);
+
+  const closeMobileNavigation = useCallback(
+    (restoreFocus = true) => {
+      removeFocusFromDrawer();
+      shouldRestoreFocusRef.current = restoreFocus;
+      setMobileNavigationOpen(false);
+    },
+    [removeFocusFromDrawer],
+  );
+
+  // Closing the drawer via a mobile navigation link must not depend on the
+  // timing of Next.js's own Link click handling or route transition: blur,
+  // mark "don't restore focus", and flush the drawer-closed state to a
+  // committed render synchronously, then navigate.
+  const navigateFromMobileDrawer = useCallback(
+    (href: string) => {
+      removeFocusFromDrawer();
+      shouldRestoreFocusRef.current = false;
+
+      flushSync(() => {
+        setMobileNavigationOpen(false);
+      });
+
+      router.push(href);
+    },
+    [removeFocusFromDrawer, router],
+  );
+
+  useEffect(() => {
+    mobileNavigationOpenRef.current = mobileNavigationOpen;
+  }, [mobileNavigationOpen]);
 
   useEffect(() => {
     if (mobileNavigationOpen) {
@@ -112,10 +173,23 @@ export function AppShell({ children }: AppShellProps) {
 
     const previouslyFocused = previouslyFocusedElementRef.current;
     previouslyFocusedElementRef.current = null;
-    if (previouslyFocused !== null) {
+    if (previouslyFocused !== null && shouldRestoreFocusRef.current) {
       previouslyFocused.focus();
     }
+    shouldRestoreFocusRef.current = true;
   }, [mobileNavigationOpen]);
+
+  // Safety net for browser back/forward and other route changes that bypass a
+  // drawer link. closeMobileNavigation() blurs any focused drawer descendant
+  // before the state update that hides the drawer, so no element can retain
+  // focus while an ancestor becomes hidden.
+  useEffect(() => {
+    if (!mobileNavigationOpenRef.current) {
+      return;
+    }
+
+    closeMobileNavigation(false);
+  }, [closeMobileNavigation, pathname]);
 
   useEffect(() => {
     if (!mobileNavigationOpen) {
@@ -124,13 +198,13 @@ export function AppShell({ children }: AppShellProps) {
 
     function handleKeyDown(event: globalThis.KeyboardEvent) {
       if (event.key === "Escape") {
-        setMobileNavigationOpen(false);
+        closeMobileNavigation();
       }
     }
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [mobileNavigationOpen]);
+  }, [closeMobileNavigation, mobileNavigationOpen]);
 
   function handleDrawerKeyDown(event: KeyboardEvent<HTMLElement>) {
     if (event.key !== "Tab") {
@@ -215,7 +289,7 @@ export function AppShell({ children }: AppShellProps) {
         <button
           type="button"
           aria-label="Close navigation overlay"
-          onClick={() => setMobileNavigationOpen(false)}
+          onClick={() => closeMobileNavigation()}
           className="fixed inset-0 z-40 bg-zinc-950/30 lg:hidden"
         />
       ) : null}
@@ -224,7 +298,6 @@ export function AppShell({ children }: AppShellProps) {
         ref={drawerRef}
         id="mobile-product-navigation"
         aria-label="Mobile product navigation"
-        aria-hidden={!mobileNavigationOpen}
         onKeyDown={handleDrawerKeyDown}
         className={`fixed inset-y-0 left-0 z-50 h-full w-[min(19rem,calc(100vw-3rem))] flex-col border-r border-zinc-200 bg-white shadow-xl dark:border-zinc-800 dark:bg-zinc-950 lg:hidden ${
           mobileNavigationOpen ? "flex" : "hidden"
@@ -236,7 +309,7 @@ export function AppShell({ children }: AppShellProps) {
             ref={closeButtonRef}
             type="button"
             aria-label="Close navigation"
-            onClick={() => setMobileNavigationOpen(false)}
+            onClick={() => closeMobileNavigation()}
             className="mr-3 inline-flex size-9 items-center justify-center rounded-md text-zinc-700 outline-none hover:bg-zinc-100 focus-visible:ring-2 focus-visible:ring-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:focus-visible:ring-zinc-100"
           >
             <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 fill-none stroke-current stroke-2">
@@ -244,7 +317,7 @@ export function AppShell({ children }: AppShellProps) {
             </svg>
           </button>
         </div>
-        <ProductNavigation pathname={pathname} onNavigate={() => setMobileNavigationOpen(false)} />
+        <ProductNavigation pathname={pathname} onNavigate={navigateFromMobileDrawer} />
       </aside>
     </div>
   );
