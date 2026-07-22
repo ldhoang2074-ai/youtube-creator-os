@@ -2,6 +2,7 @@ import { fetchChannel, type YoutubeClientOptions } from "./client";
 import { YoutubeError } from "./errors";
 import { parseChannelInput } from "./parse-channel-input";
 import type { YoutubeChannelItem } from "./schemas";
+import { pickBestThumbnailUrl } from "./thumbnail";
 import type { ResolvedChannel } from "./types";
 
 export type ResolveChannelOptions = YoutubeClientOptions;
@@ -33,7 +34,7 @@ function mapToResolvedChannel(item: YoutubeChannelItem): ResolvedChannel {
     description: item.snippet.description,
     customUrl: item.snippet.customUrl ?? null,
     publishedAt: item.snippet.publishedAt,
-    thumbnailUrl: item.snippet.thumbnails?.default?.url ?? null,
+    thumbnailUrl: pickBestThumbnailUrl(item.snippet.thumbnails),
     subscriberCount: item.statistics.subscriberCount ?? "0",
     viewCount: item.statistics.viewCount ?? "0",
     videoCount: item.statistics.videoCount ?? "0",

@@ -2,28 +2,16 @@
 
 import { useMemo, useState, type FormEvent } from "react";
 import type { OpportunityFeedResult } from "@/lib/channel-analyzer/types";
+import { isApiErrorBody } from "@/lib/http/api-error";
 import { analyzeTitlePatterns } from "@/lib/title-patterns/analyze-title-patterns";
 import { SaveResearchButton } from "@/components/workspace/SaveResearchButton";
 import { TitlePatternPanel } from "@/components/title-patterns/TitlePatternPanel";
 import { OpportunityFeedTable } from "./OpportunityFeedTable";
 
-interface ApiErrorBody {
-  readonly error: { readonly code: string; readonly message: string };
-}
-
 type Status = "idle" | "loading" | "success" | "error";
 
 const MIN_CHANNELS = 2;
 const MAX_CHANNELS = 5;
-
-function isApiErrorBody(value: unknown): value is ApiErrorBody {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "error" in value &&
-    typeof (value as { error: unknown }).error === "object"
-  );
-}
 
 function isOpportunityFeedResult(value: unknown): value is OpportunityFeedResult {
   if (typeof value !== "object" || value === null) {

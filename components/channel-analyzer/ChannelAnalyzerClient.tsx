@@ -2,23 +2,11 @@
 
 import { useState, type FormEvent } from "react";
 import type { ChannelAnalysisReport } from "@/lib/channel-analyzer/types";
+import { isApiErrorBody } from "@/lib/http/api-error";
 import { ChannelSummary } from "./ChannelSummary";
 import { VideoResultsTable } from "./VideoResultsTable";
 
-interface ApiErrorBody {
-  readonly error: { readonly code: string; readonly message: string };
-}
-
 type Status = "idle" | "loading" | "success" | "error";
-
-function isApiErrorBody(value: unknown): value is ApiErrorBody {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "error" in value &&
-    typeof (value as { error: unknown }).error === "object"
-  );
-}
 
 export function ChannelAnalyzerClient() {
   const [input, setInput] = useState("");
