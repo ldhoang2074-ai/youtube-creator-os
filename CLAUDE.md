@@ -37,7 +37,10 @@ the live `/opportunities` result and saved `/workspace` snapshots, no new
 API endpoint, no AI, no additional YouTube API request) are complete. G2A
 (provider-agnostic Transcript Domain Model: immutable normalized transcript
 documents and pure helpers in `lib/transcript/*`, no transcript provider,
-fetching, chunking, API route, or AI) is complete. All
+fetching, chunking, API route, or AI) is complete. G2B (YouTube URL & Video ID
+Parser: pure URL/reference parsing in `lib/youtube/video-id-parser.ts`, no
+network call, video existence check, API route, or transcript provider) is
+implemented, technical review passed, and awaiting commit and PR merge. All
 API access goes through
 `lib/youtube/request.ts` (server-only, API key via `x-goog-api-key` header,
 never in the URL). No database is used yet — everything is computed
@@ -47,8 +50,8 @@ called when the user explicitly runs or re-runs an analysis (from
 from `/workspace` followed by the user clicking "Find opportunities"
 themselves) — never automatically.
 
-Not yet implemented: transcript source adapters or fetching, YouTube URL/video
-ID parsing for transcripts, transcript chunking, Supabase, database connection,
+Not yet implemented: transcript source adapters or fetching, transcript chunking,
+Supabase, database connection,
 authentication, dashboard,
 watchlist (ongoing tracking), cloud sync, time-series/growth tracking, idea
 generator, AI API, caching, rate limiting, deployment. Do not start any of
