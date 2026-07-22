@@ -37,8 +37,7 @@ the live `/opportunities` result and saved `/workspace` snapshots, no new
 API endpoint, no AI, no additional YouTube API request) are complete. G2A
 (provider-agnostic Transcript Domain Model: immutable normalized transcript
 documents and pure helpers in `lib/transcript/*`, no transcript provider,
-fetching, chunking, API route, or AI) is implemented, technical review passed,
-and awaiting commit and PR merge. All
+fetching, chunking, API route, or AI) is complete. All
 API access goes through
 `lib/youtube/request.ts` (server-only, API key via `x-goog-api-key` header,
 never in the URL). No database is used yet — everything is computed
