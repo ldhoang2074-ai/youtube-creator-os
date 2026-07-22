@@ -34,7 +34,11 @@ endpoint of its own), and G1F (Deterministic Title Pattern Finder:
 detects repeated words/bigrams/openings/endings/numbers/question-marks in
 the titles of an already-computed Opportunity Feed result, shown on both
 the live `/opportunities` result and saved `/workspace` snapshots, no new
-API endpoint, no AI, no additional YouTube API request) are complete. All
+API endpoint, no AI, no additional YouTube API request) are complete. G2A
+(provider-agnostic Transcript Domain Model: immutable normalized transcript
+documents and pure helpers in `lib/transcript/*`, no transcript provider,
+fetching, chunking, API route, or AI) is implemented, technical review passed,
+and awaiting commit and PR merge. All
 API access goes through
 `lib/youtube/request.ts` (server-only, API key via `x-goog-api-key` header,
 never in the URL). No database is used yet — everything is computed
@@ -44,7 +48,9 @@ called when the user explicitly runs or re-runs an analysis (from
 from `/workspace` followed by the user clicking "Find opportunities"
 themselves) — never automatically.
 
-Not yet implemented: Supabase, database connection, authentication, dashboard,
+Not yet implemented: transcript source adapters or fetching, YouTube URL/video
+ID parsing for transcripts, transcript chunking, Supabase, database connection,
+authentication, dashboard,
 watchlist (ongoing tracking), cloud sync, time-series/growth tracking, idea
 generator, AI API, caching, rate limiting, deployment. Do not start any of
 these until a later stage is explicitly approved.
