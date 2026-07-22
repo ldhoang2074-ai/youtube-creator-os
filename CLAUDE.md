@@ -40,7 +40,7 @@ documents and pure helpers in `lib/transcript/*`, no transcript provider,
 fetching, chunking, API route, or AI) is complete. G2B (YouTube URL & Video ID
 Parser: pure URL/reference parsing in `lib/youtube/video-id-parser.ts`, no
 network call, video existence check, API route, or transcript provider) is
-implemented, technical review passed, and awaiting commit and PR merge. All
+complete. All
 API access goes through
 `lib/youtube/request.ts` (server-only, API key via `x-goog-api-key` header,
 never in the URL). No database is used yet — everything is computed
