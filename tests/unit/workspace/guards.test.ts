@@ -149,6 +149,24 @@ describe("isValidSavedResearchSession", () => {
     expect(isValidSavedResearchSession(makeSession())).toBe(true);
   });
 
+  it("accepts a valid pre-Stage-3 session whose persisted result has only items and failures", () => {
+    const preStage3Session = {
+      schemaVersion: 1,
+      id: "pre-stage-3",
+      name: "Pre-Stage-3 research",
+      savedAt: "2021-01-01T00:00:00Z",
+      inputs: ["UCaaa", "UCbbb"],
+      result: { items: [makeItem()], failures: [makeFailure()] },
+    };
+
+    expect("channels" in preStage3Session.result).toBe(false);
+    expect(isValidSavedResearchSession(preStage3Session)).toBe(true);
+
+    const parsed = parseStoredSessions(JSON.stringify([preStage3Session]));
+    expect(parsed.sessions).toHaveLength(1);
+    expect(parsed.skippedCount).toBe(0);
+  });
+
   it("rejects an epoch-like numeric string as savedAt", () => {
     expect(isValidSavedResearchSession(makeSession({ savedAt: "0" }))).toBe(false);
   });

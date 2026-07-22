@@ -66,3 +66,20 @@ export interface OpportunityFeedResult {
   readonly items: readonly OpportunityFeedItem[];
   readonly failures: readonly OpportunityFeedFailure[];
 }
+
+export interface OpportunityChannelSummary {
+  readonly channelId: string;
+  readonly title: string;
+  readonly thumbnailUrl: string | null;
+  readonly subscriberCount: string;
+  readonly totalViewCount: string;
+  readonly videoCount: string;
+  readonly medianViews: number | null;
+  readonly analyzedVideoCount: number;
+  readonly outlierRate: number | null;
+}
+
+export interface OpportunityFeedApiResponse {
+  readonly feed: OpportunityFeedResult;
+  readonly channels: readonly OpportunityChannelSummary[];
+}

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { buildOpportunityChannelSummaries } from "@/lib/channel-analyzer/build-opportunity-channel-summaries";
 import { buildOpportunityFeed } from "@/lib/channel-analyzer/build-opportunity-feed";
 import { compareChannels } from "@/lib/channel-analyzer/compare-channels";
 
@@ -44,6 +45,7 @@ export async function POST(request: Request): Promise<Response> {
 
   const compareResult = await compareChannels(trimmed);
   const feed = buildOpportunityFeed(compareResult);
+  const channels = buildOpportunityChannelSummaries(compareResult);
 
-  return NextResponse.json(feed, { status: 200 });
+  return NextResponse.json({ feed, channels }, { status: 200 });
 }
