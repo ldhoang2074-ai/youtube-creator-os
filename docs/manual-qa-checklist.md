@@ -47,3 +47,21 @@ Use this checklist for UI2 Stage 0 and extend it for each later UI2 stage. Recor
 - [ ] `app/error.tsx` shows the recovery UI for a thrown render error and its `Try again` action recovers after the cause is removed.
 - [ ] Route transitions can show the lightweight root loading fallback without replacing feature-request loading indicators.
 - [ ] No unexpected browser-console errors or warnings appear during Stage 0 verification.
+
+## Stage 1 — Analyzer video grid
+
+- [ ] A real channel result displays approximately 25 analyzed videos in the Analyzer grid.
+- [ ] The Analyzer grid reflows from one column on narrow mobile to two and then three columns at wider viewports.
+- [ ] The Analyzer grid has no horizontal overflow at a 390px mobile width.
+- [ ] Thumbnail and null-thumbnail fallback dimensions remain stable at the same 16:9 ratio.
+- [ ] No visible layout shift occurs while thumbnails load.
+- [ ] Video thumbnails use lazy loading.
+- [ ] Keyboard Tab order follows the card document order.
+- [ ] Every YouTube video link has a visible focus indicator.
+- [ ] Each card link opens the matching YouTube video.
+- [ ] Null viewCount, likeCount, and commentCount render as "—".
+- [ ] OutlierBadge renders every supported level correctly.
+- [ ] The existing Analyzer empty state remains unchanged.
+- [ ] Analyzer loading and error states remain unchanged.
+- [ ] Review the Analyzer grid in light and dark appearance where supported by the test environment.
+- [ ] The browser console contains no unexpected warnings or errors.

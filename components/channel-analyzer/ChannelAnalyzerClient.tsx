@@ -3,8 +3,9 @@
 import { useState, type FormEvent } from "react";
 import type { ChannelAnalysisReport } from "@/lib/channel-analyzer/types";
 import { isApiErrorBody } from "@/lib/http/api-error";
+import { Grid } from "@/components/ui/Grid";
 import { ChannelSummary } from "./ChannelSummary";
-import { VideoResultsTable } from "./VideoResultsTable";
+import { VideoCard } from "./VideoCard";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -93,7 +94,11 @@ export function ChannelAnalyzerClient() {
               This channel has no videos we could analyze yet.
             </div>
           ) : (
-            <VideoResultsTable videos={report.videos} />
+            <Grid>
+              {report.videos.map((video) => (
+                <VideoCard key={video.videoId} video={video} />
+              ))}
+            </Grid>
           )}
         </div>
       ) : null}
