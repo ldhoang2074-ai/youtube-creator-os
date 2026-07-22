@@ -74,7 +74,7 @@ describe("POST /api/opportunities", () => {
     expect(compareChannelsMock).toHaveBeenCalledWith(["UCaaa", "UCbbb"]);
   });
 
-  it("returns 200 with a populated feed for a valid successful request", async () => {
+  it("returns 200 with a populated feed and channel summaries for a valid successful request", async () => {
     const compareResult: CompareChannelsResult = {
       results: [
         {
@@ -101,9 +101,22 @@ describe("POST /api/opportunities", () => {
     const json = await response.json();
 
     expect(response.status).toBe(200);
-    expect(json.items).toHaveLength(1);
-    expect(json.items[0].videoId).toBe("vidA");
-    expect(json.failures).toEqual([]);
+    expect(json.feed.items).toHaveLength(1);
+    expect(json.feed.items[0].videoId).toBe("vidA");
+    expect(json.feed.failures).toEqual([]);
+    expect(json.channels).toEqual([
+      {
+        channelId: "UCaaa",
+        title: "Channel A",
+        thumbnailUrl: null,
+        subscriberCount: "1000",
+        totalViewCount: "5000",
+        videoCount: "10",
+        medianViews: 100,
+        analyzedVideoCount: 1,
+        outlierRate: 1,
+      },
+    ]);
   });
 
   it("returns 200 for a mixed success/failure result", async () => {
@@ -138,11 +151,13 @@ describe("POST /api/opportunities", () => {
     const json = await response.json();
 
     expect(response.status).toBe(200);
-    expect(json.items).toHaveLength(1);
-    expect(json.failures).toHaveLength(1);
+    expect(json.feed.items).toHaveLength(1);
+    expect(json.feed.failures).toHaveLength(1);
+    expect(json.feed.failures[0].input).toBe("UCbad");
+    expect(json.channels.map((channel: { channelId: string }) => channel.channelId)).toEqual(["UCaaa"]);
   });
 
-  it("returns 200 with items:[] when every channel fails", async () => {
+  it("returns 200 with an empty feed and no channel summaries when every channel fails", async () => {
     const compareResult: CompareChannelsResult = {
       results: [
         {
@@ -163,8 +178,9 @@ describe("POST /api/opportunities", () => {
     const json = await response.json();
 
     expect(response.status).toBe(200);
-    expect(json.items).toEqual([]);
-    expect(json.failures).toHaveLength(2);
+    expect(json.feed.items).toEqual([]);
+    expect(json.feed.failures).toHaveLength(2);
+    expect(json.channels).toEqual([]);
   });
 
   it("returns 200 with an empty feed when no channel has a qualifying video", async () => {
@@ -194,8 +210,66 @@ describe("POST /api/opportunities", () => {
     const json = await response.json();
 
     expect(response.status).toBe(200);
-    expect(json.items).toEqual([]);
-    expect(json.failures).toEqual([]);
+    expect(json.feed.items).toEqual([]);
+    expect(json.feed.failures).toEqual([]);
+    expect(json.channels).toHaveLength(1);
+    expect(json.channels[0].channelId).toBe("UCaaa");
+  });
+
+  it("preserves successful compare/input order in channel summaries", async () => {
+    const compareResult: CompareChannelsResult = {
+      results: [
+        {
+          input: "UCsecond",
+          status: "success",
+          report: {
+            channelId: "UCsecond",
+            title: "Second channel",
+            thumbnailUrl: null,
+            subscriberCount: "2",
+            totalViewCount: "20",
+            videoCount: "2",
+            medianViews: 2,
+            analyzedVideoCount: 1,
+            videos: [],
+            outlierRate: 0,
+          },
+        },
+        {
+          input: "UCbad",
+          status: "error",
+          error: { code: "CHANNEL_NOT_FOUND", message: "No channel found" },
+        },
+        {
+          input: "UCfirst",
+          status: "success",
+          report: {
+            channelId: "UCfirst",
+            title: "First channel",
+            thumbnailUrl: null,
+            subscriberCount: "1",
+            totalViewCount: "10",
+            videoCount: "1",
+            medianViews: 1,
+            analyzedVideoCount: 1,
+            videos: [],
+            outlierRate: 0,
+          },
+        },
+      ],
+    };
+    compareChannelsMock.mockResolvedValueOnce(compareResult);
+
+    const response = await POST(
+      makeRequest(JSON.stringify({ inputs: ["UCsecond", "UCbad", "UCfirst"] })),
+    );
+    const json = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(json.channels.map((channel: { channelId: string }) => channel.channelId)).toEqual([
+      "UCsecond",
+      "UCfirst",
+    ]);
   });
 
   it("does not leak internal data in a validation error body", async () => {

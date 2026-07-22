@@ -91,3 +91,30 @@ Use this checklist for UI2 Stage 0 and extend it for each later UI2 stage. Recor
 - [ ] /analyzer still renders the Stage 1 video grid.
 - [ ] Review light and dark appearance where supported by the test environment.
 - [ ] The browser console contains no unexpected warnings or errors.
+
+## Stage 3 — Opportunities channel grid
+
+- [ ] The channel grid appears alongside, not instead of, the existing video table.
+- [ ] The channel grid reflows from one to two to three columns at wider viewports.
+- [ ] The channel grid has no horizontal overflow near 390px.
+- [ ] Channel cards follow submitted successful-channel order.
+- [ ] Failed channels are excluded from the grid and remain in the failures list.
+- [ ] A successful channel with no qualifying videos still appears in the grid.
+- [ ] Each title and thumbnail matches the correct channel.
+- [ ] Subscribers, total views, video count, median views, analyzed videos, and outlier rate are correct.
+- [ ] Null median/outlier fallback is stable when naturally available.
+- [ ] Thumbnail fallback is stable when naturally available.
+- [ ] Thumbnails lazy-load without visible layout shift.
+- [ ] Channel cards are static and contain no unexpected interactive elements.
+- [ ] The existing video table still renders and keeps its ordering.
+- [ ] The existing empty video-feed message still works.
+- [ ] TitlePatternPanel remains correct.
+- [ ] SaveResearchButton still saves only OpportunityFeedResult.
+- [ ] A pre-Stage-3 saved session still loads and renders in Workspace.
+- [ ] A newly saved Stage-3 session appears in Workspace.
+- [ ] Newly persisted result contains items and failures only, with no channels field.
+- [ ] Loading, invalid-input, malformed-response, and API-error behavior does not leave stale grid data.
+- [ ] The Analyzer Stage 1 grid still works.
+- [ ] The Workspace Stage 2 grid still works.
+- [ ] Review light and dark appearance where supported by the test environment.
+- [ ] The browser console contains no unexpected warnings or errors.

@@ -1,11 +1,17 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
-import type { OpportunityFeedResult } from "@/lib/channel-analyzer/types";
+import type {
+  OpportunityChannelSummary,
+  OpportunityFeedApiResponse,
+  OpportunityFeedResult,
+} from "@/lib/channel-analyzer/types";
 import { isApiErrorBody } from "@/lib/http/api-error";
 import { analyzeTitlePatterns } from "@/lib/title-patterns/analyze-title-patterns";
 import { SaveResearchButton } from "@/components/workspace/SaveResearchButton";
 import { TitlePatternPanel } from "@/components/title-patterns/TitlePatternPanel";
+import { Grid } from "@/components/ui/Grid";
+import { ChannelCard } from "./ChannelCard";
 import { OpportunityFeedTable } from "./OpportunityFeedTable";
 
 type Status = "idle" | "loading" | "success" | "error";
@@ -13,12 +19,45 @@ type Status = "idle" | "loading" | "success" | "error";
 const MIN_CHANNELS = 2;
 const MAX_CHANNELS = 5;
 
-function isOpportunityFeedResult(value: unknown): value is OpportunityFeedResult {
+function isOpportunityChannelSummary(value: unknown): value is OpportunityChannelSummary {
   if (typeof value !== "object" || value === null) {
     return false;
   }
-  const candidate = value as { items?: unknown; failures?: unknown };
-  return Array.isArray(candidate.items) && Array.isArray(candidate.failures);
+  const candidate = value as Record<string, unknown>;
+  return (
+    typeof candidate.channelId === "string" &&
+    typeof candidate.title === "string" &&
+    (candidate.thumbnailUrl === null || typeof candidate.thumbnailUrl === "string") &&
+    typeof candidate.subscriberCount === "string" &&
+    typeof candidate.totalViewCount === "string" &&
+    typeof candidate.videoCount === "string" &&
+    (candidate.medianViews === null ||
+      (typeof candidate.medianViews === "number" && Number.isFinite(candidate.medianViews))) &&
+    typeof candidate.analyzedVideoCount === "number" &&
+    Number.isFinite(candidate.analyzedVideoCount) &&
+    candidate.analyzedVideoCount >= 0 &&
+    (candidate.outlierRate === null ||
+      (typeof candidate.outlierRate === "number" &&
+        Number.isFinite(candidate.outlierRate) &&
+        candidate.outlierRate >= 0))
+  );
+}
+
+function isOpportunityFeedApiResponse(value: unknown): value is OpportunityFeedApiResponse {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+  const candidate = value as Record<string, unknown>;
+  if (typeof candidate.feed !== "object" || candidate.feed === null) {
+    return false;
+  }
+  const feed = candidate.feed as Record<string, unknown>;
+  return (
+    Array.isArray(feed.items) &&
+    Array.isArray(feed.failures) &&
+    Array.isArray(candidate.channels) &&
+    candidate.channels.every(isOpportunityChannelSummary)
+  );
 }
 
 interface OpportunityFeedClientProps {
@@ -31,6 +70,7 @@ export function OpportunityFeedClient({ initialInputs }: OpportunityFeedClientPr
   );
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<OpportunityFeedResult | null>(null);
+  const [channels, setChannels] = useState<readonly OpportunityChannelSummary[]>([]);
   const [successfulInputs, setSuccessfulInputs] = useState<readonly string[] | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -53,6 +93,7 @@ export function OpportunityFeedClient({ initialInputs }: OpportunityFeedClientPr
     if (inputs.length < MIN_CHANNELS) {
       setStatus("error");
       setResult(null);
+      setChannels([]);
       setSuccessfulInputs(null);
       setErrorMessage(`Enter at least ${MIN_CHANNELS} channels (one per line).`);
       return;
@@ -60,6 +101,7 @@ export function OpportunityFeedClient({ initialInputs }: OpportunityFeedClientPr
     if (inputs.length > MAX_CHANNELS) {
       setStatus("error");
       setResult(null);
+      setChannels([]);
       setSuccessfulInputs(null);
       setErrorMessage(`Enter at most ${MAX_CHANNELS} channels (one per line).`);
       return;
@@ -68,6 +110,7 @@ export function OpportunityFeedClient({ initialInputs }: OpportunityFeedClientPr
     setStatus("loading");
     setErrorMessage(null);
     setResult(null);
+    setChannels([]);
     setSuccessfulInputs(null);
 
     try {
@@ -95,13 +138,14 @@ export function OpportunityFeedClient({ initialInputs }: OpportunityFeedClientPr
         return;
       }
 
-      if (!isOpportunityFeedResult(json)) {
+      if (!isOpportunityFeedApiResponse(json)) {
         setStatus("error");
         setErrorMessage("The server returned an unexpected response. Please try again.");
         return;
       }
 
-      setResult(json);
+      setResult(json.feed);
+      setChannels(json.channels);
       // Captured from this exact request's closure — never re-read from
       // rawInput later, since the user may have edited the textarea since.
       setSuccessfulInputs(inputs);
@@ -149,6 +193,25 @@ export function OpportunityFeedClient({ initialInputs }: OpportunityFeedClientPr
         <div className="flex flex-col gap-4">
           {successfulInputs ? (
             <SaveResearchButton inputs={successfulInputs} result={result} />
+          ) : null}
+
+          {channels.length > 0 ? (
+            <section aria-labelledby="channel-overview-heading" className="flex flex-col gap-3">
+              <h2
+                id="channel-overview-heading"
+                className="text-lg font-semibold text-zinc-950 dark:text-zinc-50"
+              >
+                Channel overview
+              </h2>
+              <Grid>
+                {channels.map((channel, index) => (
+                  <ChannelCard
+                    key={`${channel.channelId}-${index}`}
+                    channel={channel}
+                  />
+                ))}
+              </Grid>
+            </section>
           ) : null}
 
           {result.items.length > 0 ? (
