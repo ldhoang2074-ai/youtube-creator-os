@@ -10,12 +10,9 @@ export default async function OpportunitiesPage({ searchParams }: OpportunitiesP
   const initialInputs = parseChannelQuery(resolvedSearchParams.channel);
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-6 py-12">
+    <div className="flex w-full max-w-5xl flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
-          Opportunity Feed
-        </h1>
-        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
           Videos in the analyzed recent set that reached at least 2× their
           channel&apos;s median views. Each channel analyzes only its 25 most
           recent videos. This reflects only the analyzed set and does not

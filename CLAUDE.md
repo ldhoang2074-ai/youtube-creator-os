@@ -56,3 +56,7 @@ authentication, dashboard,
 watchlist (ongoing tracking), cloud sync, time-series/growth tracking, idea
 generator, AI API, caching, rate limiting, deployment. Do not start any of
 these until a later stage is explicitly approved.
+
+UI1 (Product Shell & Navigation: shared responsive product shell, deterministic
+navigation metadata, and no feature business-logic changes) is implemented,
+verification passed, and awaiting final focused technical re-review.
