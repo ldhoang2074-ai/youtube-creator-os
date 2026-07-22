@@ -65,3 +65,29 @@ Use this checklist for UI2 Stage 0 and extend it for each later UI2 stage. Recor
 - [ ] Analyzer loading and error states remain unchanged.
 - [ ] Review the Analyzer grid in light and dark appearance where supported by the test environment.
 - [ ] The browser console contains no unexpected warnings or errors.
+
+## Stage 2 — Workspace video grid
+
+- [ ] Previously saved sessions still load.
+- [ ] The outer session list remains a vertical management list.
+- [ ] A session expands and collapses correctly.
+- [ ] The inner video list renders as a responsive one-, two-, and three-column grid.
+- [ ] A saved session containing videos from multiple channels displays the correct channel on each card.
+- [ ] Title, thumbnail, date, duration, views, median views, multiplier, and badge are correct.
+- [ ] Each YouTube card link opens the matching video.
+- [ ] Keyboard Tab order follows document order.
+- [ ] The focus indicator is visible.
+- [ ] There is no horizontal overflow at approximately 390px.
+- [ ] Thumbnail dimensions and null-thumbnail fallback remain stable.
+- [ ] Thumbnails lazy-load without obvious layout shift.
+- [ ] The manually saved snapshot disclosure remains visible.
+- [ ] A zero-item saved session keeps the existing empty message.
+- [ ] TitlePatternPanel remains visible for sessions with items.
+- [ ] Saved failures remain visible.
+- [ ] Open these channels in Opportunity Feed still works.
+- [ ] Delete request, cancel, confirm, and error UI remain functional.
+- [ ] Pre-existing saved-session data remains compatible.
+- [ ] /opportunities still renders its existing table.
+- [ ] /analyzer still renders the Stage 1 video grid.
+- [ ] Review light and dark appearance where supported by the test environment.
+- [ ] The browser console contains no unexpected warnings or errors.

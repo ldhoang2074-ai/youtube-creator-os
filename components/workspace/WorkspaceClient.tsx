@@ -11,8 +11,9 @@ import {
   type StorageHost,
 } from "@/lib/workspace/storage";
 import { analyzeTitlePatterns } from "@/lib/title-patterns/analyze-title-patterns";
-import { OpportunityFeedTable } from "@/components/opportunity-feed/OpportunityFeedTable";
 import { TitlePatternPanel } from "@/components/title-patterns/TitlePatternPanel";
+import { Grid } from "@/components/ui/Grid";
+import { WorkspaceVideoCard } from "./WorkspaceVideoCard";
 
 const SERVER_SNAPSHOT: ListSessionsResult = { ok: true, sessions: [], skippedCount: 0 };
 const STORAGE_UNAVAILABLE_SNAPSHOT: ListSessionsResult = {
@@ -264,7 +265,11 @@ export function WorkspaceClient() {
                 </p>
 
                 {session.result.items.length > 0 ? (
-                  <OpportunityFeedTable items={session.result.items} showThumbnails={false} />
+                  <Grid>
+                    {session.result.items.map((item) => (
+                      <WorkspaceVideoCard key={item.videoId} item={item} />
+                    ))}
+                  </Grid>
                 ) : (
                   <div className="rounded-md border border-dashed border-zinc-300 px-4 py-6 text-center text-sm text-zinc-500 dark:border-zinc-700">
                     No recent analyzed videos reached the 2× outlier threshold.
