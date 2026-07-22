@@ -1,3 +1,4 @@
+import { buildYoutubeWatchUrl } from "@/lib/format/video";
 import type { TitlePattern, TitlePatternKind, TitlePatternReport } from "@/lib/title-patterns/types";
 
 const MAX_DISPLAYED_PATTERNS = 15;
@@ -10,10 +11,6 @@ const KIND_LABELS: Record<TitlePatternKind, string> = {
   numeric: "Uses a number",
   "question-mark": "Question mark",
 };
-
-function buildYoutubeWatchUrl(videoId: string): string {
-  return `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}`;
-}
 
 interface TitlePatternPanelProps {
   readonly report: TitlePatternReport;

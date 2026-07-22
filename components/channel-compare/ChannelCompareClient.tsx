@@ -2,25 +2,13 @@
 
 import { useState, type FormEvent } from "react";
 import type { CompareChannelsResult } from "@/lib/channel-analyzer/types";
+import { isApiErrorBody } from "@/lib/http/api-error";
 import { ComparisonTable } from "./ComparisonTable";
-
-interface ApiErrorBody {
-  readonly error: { readonly code: string; readonly message: string };
-}
 
 type Status = "idle" | "loading" | "success" | "error";
 
 const MIN_CHANNELS = 2;
 const MAX_CHANNELS = 5;
-
-function isApiErrorBody(value: unknown): value is ApiErrorBody {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "error" in value &&
-    typeof (value as { error: unknown }).error === "object"
-  );
-}
 
 export function ChannelCompareClient() {
   const [rawInput, setRawInput] = useState("");

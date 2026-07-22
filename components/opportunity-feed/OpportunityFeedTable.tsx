@@ -1,16 +1,5 @@
 import type { OpportunityFeedItem } from "@/lib/channel-analyzer/types";
-
-function formatDuration(totalSeconds: number): string {
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  const segments = hours > 0 ? [hours, minutes, seconds] : [minutes, seconds];
-
-  return segments
-    .map((segment, index) => (index === 0 ? String(segment) : String(segment).padStart(2, "0")))
-    .join(":");
-}
+import { buildYoutubeWatchUrl, formatDuration } from "@/lib/format/video";
 
 function formatMultiplier(ratio: number): string {
   return `${ratio.toFixed(1)}×`;
@@ -20,10 +9,6 @@ const LEVEL_LABELS: Record<OpportunityFeedItem["outlierLevel"], string> = {
   outlier: "Outlier",
   "strong-outlier": "Strong outlier",
 };
-
-function buildYoutubeWatchUrl(videoId: string): string {
-  return `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}`;
-}
 
 interface OpportunityFeedTableProps {
   readonly items: readonly OpportunityFeedItem[];
