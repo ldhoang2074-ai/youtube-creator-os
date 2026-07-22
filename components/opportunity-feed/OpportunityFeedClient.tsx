@@ -12,12 +12,25 @@ import { SaveResearchButton } from "@/components/workspace/SaveResearchButton";
 import { TitlePatternPanel } from "@/components/title-patterns/TitlePatternPanel";
 import { Grid } from "@/components/ui/Grid";
 import { ChannelCard } from "./ChannelCard";
+import { ChannelDetailDialog } from "./ChannelDetailDialog";
 import { OpportunityFeedTable } from "./OpportunityFeedTable";
+import { VideoDetailDialog } from "@/components/video/VideoDetailDialog";
 
 type Status = "idle" | "loading" | "success" | "error";
 
 const MIN_CHANNELS = 2;
 const MAX_CHANNELS = 5;
+
+type SelectedOpportunityDetail =
+  | {
+      readonly kind: "video";
+      readonly item: OpportunityFeedResult["items"][number];
+    }
+  | {
+      readonly kind: "channel";
+      readonly channel: OpportunityChannelSummary;
+    }
+  | null;
 
 function isOpportunityChannelSummary(value: unknown): value is OpportunityChannelSummary {
   if (typeof value !== "object" || value === null) {
@@ -73,6 +86,7 @@ export function OpportunityFeedClient({ initialInputs }: OpportunityFeedClientPr
   const [channels, setChannels] = useState<readonly OpportunityChannelSummary[]>([]);
   const [successfulInputs, setSuccessfulInputs] = useState<readonly string[] | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [selectedDetail, setSelectedDetail] = useState<SelectedOpportunityDetail>(null);
 
   const titlePatternReport = useMemo(
     () => analyzeTitlePatterns(result?.items ?? []),
@@ -95,6 +109,7 @@ export function OpportunityFeedClient({ initialInputs }: OpportunityFeedClientPr
       setResult(null);
       setChannels([]);
       setSuccessfulInputs(null);
+      setSelectedDetail(null);
       setErrorMessage(`Enter at least ${MIN_CHANNELS} channels (one per line).`);
       return;
     }
@@ -103,6 +118,7 @@ export function OpportunityFeedClient({ initialInputs }: OpportunityFeedClientPr
       setResult(null);
       setChannels([]);
       setSuccessfulInputs(null);
+      setSelectedDetail(null);
       setErrorMessage(`Enter at most ${MAX_CHANNELS} channels (one per line).`);
       return;
     }
@@ -112,6 +128,7 @@ export function OpportunityFeedClient({ initialInputs }: OpportunityFeedClientPr
     setResult(null);
     setChannels([]);
     setSuccessfulInputs(null);
+    setSelectedDetail(null);
 
     try {
       const response = await fetch("/api/opportunities", {
@@ -208,6 +225,9 @@ export function OpportunityFeedClient({ initialInputs }: OpportunityFeedClientPr
                   <ChannelCard
                     key={`${channel.channelId}-${index}`}
                     channel={channel}
+                    onViewDetails={(selectedChannel) =>
+                      setSelectedDetail({ kind: "channel", channel: selectedChannel })
+                    }
                   />
                 ))}
               </Grid>
@@ -215,7 +235,10 @@ export function OpportunityFeedClient({ initialInputs }: OpportunityFeedClientPr
           ) : null}
 
           {result.items.length > 0 ? (
-            <OpportunityFeedTable items={result.items} />
+            <OpportunityFeedTable
+              items={result.items}
+              onViewDetails={(item) => setSelectedDetail({ kind: "video", item })}
+            />
           ) : result.failures.length === 0 ? (
             <div className="rounded-md border border-dashed border-zinc-300 px-4 py-8 text-center text-sm text-zinc-500 dark:border-zinc-700">
               No recent analyzed videos reached the 2× outlier threshold.
@@ -239,6 +262,19 @@ export function OpportunityFeedClient({ initialInputs }: OpportunityFeedClientPr
               ))}
             </ul>
           ) : null}
+
+          <VideoDetailDialog
+            source={
+              selectedDetail?.kind === "video"
+                ? { kind: "feed", item: selectedDetail.item }
+                : null
+            }
+            onClose={() => setSelectedDetail(null)}
+          />
+          <ChannelDetailDialog
+            channel={selectedDetail?.kind === "channel" ? selectedDetail.channel : null}
+            onClose={() => setSelectedDetail(null)}
+          />
         </div>
       ) : null}
     </div>

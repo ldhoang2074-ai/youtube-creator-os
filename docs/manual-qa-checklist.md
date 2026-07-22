@@ -118,3 +118,26 @@ Use this checklist for UI2 Stage 0 and extend it for each later UI2 stage. Recor
 - [ ] The Workspace Stage 2 grid still works.
 - [ ] Review light and dark appearance where supported by the test environment.
 - [ ] The browser console contains no unexpected warnings or errors.
+
+## Stage 4 — In-memory video and channel details
+
+- [ ] Analyzer video cards open details while their existing YouTube links still open the matching video.
+- [ ] Workspace saved-session video cards open details while their existing YouTube links still open the matching video.
+- [ ] Opportunity video-table rows retain their direct YouTube links and their `View details` actions open the matching video detail.
+- [ ] Opportunity channel-card `View channel details` actions open the clicked channel detail.
+- [ ] Detail content identifies the current analyzed result and does not imply newly fetched data.
+- [ ] Analyzer details show date, duration, views, likes, comments, multiplier, and outlier level; null numeric values render as `—`.
+- [ ] Feed and Workspace details show channel, date, duration, views, channel median, multiplier, and outlier level.
+- [ ] Channel details show only the supported summary fields; null median/outlier values render as `—`.
+- [ ] Thumbnail fallbacks maintain stable video 16:9 and channel avatar dimensions when naturally available.
+- [ ] Detail triggers are native buttons, have visible focus indicators, and are never nested inside links.
+- [ ] Opening a detail dialog places focus on its close button; Tab and Shift+Tab stay inside the dialog.
+- [ ] Escape and the close button close the dialog and restore focus to the exact connected trigger.
+- [ ] Closing after a trigger is removed causes no error and does not focus a disconnected element.
+- [ ] Body scrolling is locked while a detail dialog is open; dialog content scrolls internally when needed.
+- [ ] At desktop, tablet, and approximately 390px mobile widths, the dialog stays in the viewport with no horizontal overflow and a reachable close button.
+- [ ] Long titles and large values wrap safely in both light and dark appearance.
+- [ ] With `@YouTube` and `https://www.youtube.com/@YouTube`, both resolved channel cards open independently with no duplicate-key or selection confusion.
+- [ ] A new Analyzer or Opportunities request clears any open detail selection; collapsing, deleting, replacing, or invalidating a Workspace session clears its detail selection.
+- [ ] Analyzer, Opportunities, and Workspace retain their existing ordering, error/empty states, save behavior, and external YouTube links.
+- [ ] The browser console contains no unexpected React or accessibility warnings/errors.

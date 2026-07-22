@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import type { ChannelAnalysisReport } from "@/lib/channel-analyzer/types";
+import type { ChannelAnalysisReport, VideoAnalysis } from "@/lib/channel-analyzer/types";
 import { isApiErrorBody } from "@/lib/http/api-error";
 import { Grid } from "@/components/ui/Grid";
+import { VideoDetailDialog } from "@/components/video/VideoDetailDialog";
 import { ChannelSummary } from "./ChannelSummary";
 import { VideoCard } from "./VideoCard";
 
@@ -13,10 +14,12 @@ export function ChannelAnalyzerClient() {
   const [input, setInput] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [report, setReport] = useState<ChannelAnalysisReport | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<VideoAnalysis | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setSelectedVideo(null);
     if (status === "loading") {
       return;
     }
@@ -96,10 +99,14 @@ export function ChannelAnalyzerClient() {
           ) : (
             <Grid>
               {report.videos.map((video) => (
-                <VideoCard key={video.videoId} video={video} />
+                <VideoCard key={video.videoId} video={video} onViewDetails={setSelectedVideo} />
               ))}
             </Grid>
           )}
+          <VideoDetailDialog
+            source={selectedVideo ? { kind: "analyzer", video: selectedVideo } : null}
+            onClose={() => setSelectedVideo(null)}
+          />
         </div>
       ) : null}
     </div>

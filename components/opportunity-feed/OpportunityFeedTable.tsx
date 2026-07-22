@@ -13,9 +13,14 @@ const LEVEL_LABELS: Record<OpportunityFeedItem["outlierLevel"], string> = {
 interface OpportunityFeedTableProps {
   readonly items: readonly OpportunityFeedItem[];
   readonly showThumbnails?: boolean;
+  readonly onViewDetails?: (item: OpportunityFeedItem) => void;
 }
 
-export function OpportunityFeedTable({ items, showThumbnails = true }: OpportunityFeedTableProps) {
+export function OpportunityFeedTable({
+  items,
+  showThumbnails = true,
+  onViewDetails,
+}: OpportunityFeedTableProps) {
   return (
     <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
       <table className="w-full min-w-[860px] text-left text-sm">
@@ -29,6 +34,7 @@ export function OpportunityFeedTable({ items, showThumbnails = true }: Opportuni
             <th className="px-4 py-2">Channel median views</th>
             <th className="px-4 py-2">Outlier multiplier</th>
             <th className="px-4 py-2">Level</th>
+            {onViewDetails ? <th className="px-4 py-2">Actions</th> : null}
           </tr>
         </thead>
         <tbody>
@@ -70,6 +76,18 @@ export function OpportunityFeedTable({ items, showThumbnails = true }: Opportuni
                 <td className="px-4 py-2">{item.channelMedianViews}</td>
                 <td className="px-4 py-2">{formatMultiplier(item.outlierRatio)}</td>
                 <td className="px-4 py-2">{LEVEL_LABELS[item.outlierLevel]}</td>
+                {onViewDetails ? (
+                  <td className="px-4 py-2">
+                    <button
+                      type="button"
+                      aria-label={`View details for ${item.title}`}
+                      onClick={() => onViewDetails(item)}
+                      className="whitespace-nowrap rounded-md border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 outline-none hover:bg-zinc-100 focus-visible:ring-2 focus-visible:ring-zinc-900 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:focus-visible:ring-zinc-100"
+                    >
+                      View details
+                    </button>
+                  </td>
+                ) : null}
               </tr>
             );
           })}

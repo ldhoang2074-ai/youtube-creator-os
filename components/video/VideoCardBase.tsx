@@ -13,6 +13,7 @@ interface VideoCardBaseProps {
   readonly publishedAt: string;
   readonly durationSeconds: number;
   readonly metrics: readonly VideoCardMetric[];
+  readonly detailAction?: ReactNode;
 }
 
 export function VideoCardBase({
@@ -22,15 +23,16 @@ export function VideoCardBase({
   publishedAt,
   durationSeconds,
   metrics,
+  detailAction,
 }: VideoCardBaseProps) {
   return (
-    <article className="h-full overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+    <article className="flex h-full flex-col overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
       <a
         href={buildYoutubeWatchUrl(videoId)}
         target="_blank"
         rel="noopener noreferrer"
         aria-label={`Open ${title} on YouTube`}
-        className="group flex h-full flex-col outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-zinc-900 dark:focus-visible:ring-zinc-100"
+        className="group flex flex-1 flex-col outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-zinc-900 dark:focus-visible:ring-zinc-100"
       >
         <div className="aspect-video w-full shrink-0 overflow-hidden bg-zinc-200 dark:bg-zinc-800">
           {thumbnailUrl ? (
@@ -82,6 +84,9 @@ export function VideoCardBase({
           </dl>
         </div>
       </a>
+      {detailAction ? (
+        <div className="border-t border-zinc-200 px-4 py-3 dark:border-zinc-800">{detailAction}</div>
+      ) : null}
     </article>
   );
 }

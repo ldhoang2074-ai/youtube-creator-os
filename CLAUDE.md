@@ -60,6 +60,7 @@ these until a later stage is explicitly approved.
 UI1 (Product Shell & Navigation: shared responsive product shell, deterministic
 navigation metadata, and no feature business-logic changes) and its
 mobile-navigation hotfix are merged. The UI2 readiness audit is merged. The
-UI2 Stage 0 foundations, UI2 Stage 1 Analyzer video grid, and UI2 Stage 2
-Workspace video grid are merged. The current implementation stage is UI2 Stage
-3 Opportunities channel grid.
+UI2 Stage 0 foundations, UI2 Stage 1 Analyzer video grid, UI2 Stage 2
+Workspace video grid, and UI2 Stage 3 Opportunities channel grid are merged.
+The current implementation stage is UI2 Stage 4 in-memory video and channel
+detail interactions.
