@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useCallback, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import {
   deleteSession,
@@ -13,6 +13,7 @@ import {
 import { analyzeTitlePatterns } from "@/lib/title-patterns/analyze-title-patterns";
 import { TitlePatternPanel } from "@/components/title-patterns/TitlePatternPanel";
 import { Grid } from "@/components/ui/Grid";
+import { VideoDetailDialog } from "@/components/video/VideoDetailDialog";
 import { WorkspaceVideoCard } from "./WorkspaceVideoCard";
 
 const SERVER_SNAPSHOT: ListSessionsResult = { ok: true, sessions: [], skippedCount: 0 };
@@ -90,22 +91,43 @@ interface DeleteError {
   readonly message: string;
 }
 
+interface SelectedWorkspaceVideo {
+  readonly sessionId: string;
+  readonly videoId: string;
+}
+
 export function WorkspaceClient() {
-  const snapshot = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const [, setRefreshTick] = useState(0);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<SelectedWorkspaceVideo | null>(null);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<DeleteError | null>(null);
 
+  const subscribeToWorkspace = useCallback((onStoreChange: () => void) => {
+    return subscribe(() => {
+      setSelectedVideo(null);
+      onStoreChange();
+    });
+  }, []);
+  const snapshot = useSyncExternalStore(subscribeToWorkspace, getSnapshot, getServerSnapshot);
+
   const isInitialServerSnapshot = snapshot === SERVER_SNAPSHOT;
+  const resolvedSelectedVideo =
+    snapshot.ok && selectedVideo
+      ? snapshot.sessions
+          .find((session) => session.id === selectedVideo.sessionId)
+          ?.result.items.find((item) => item.videoId === selectedVideo.videoId)
+      : undefined;
 
   function refreshSnapshot() {
     cachedRawValue = undefined; // force the next getSnapshot() call to re-read
+    setSelectedVideo(null);
     setRefreshTick((tick) => tick + 1); // force a re-render so it actually happens
   }
 
   function handleSelect(id: string) {
     setSelectedId((current) => (current === id ? null : id));
+    setSelectedVideo(null);
     setPendingDeleteId(null);
   }
 
@@ -142,6 +164,7 @@ export function WorkspaceClient() {
     setPendingDeleteId(null);
     setDeleteError(null);
     setSelectedId((current) => (current === id ? null : current));
+    setSelectedVideo((current) => (current?.sessionId === id ? null : current));
     refreshSnapshot();
   }
 
@@ -267,7 +290,13 @@ export function WorkspaceClient() {
                 {session.result.items.length > 0 ? (
                   <Grid>
                     {session.result.items.map((item) => (
-                      <WorkspaceVideoCard key={item.videoId} item={item} />
+                      <WorkspaceVideoCard
+                        key={item.videoId}
+                        item={item}
+                        onViewDetails={() =>
+                          setSelectedVideo({ sessionId: session.id, videoId: item.videoId })
+                        }
+                      />
                     ))}
                   </Grid>
                 ) : (
@@ -299,6 +328,10 @@ export function WorkspaceClient() {
           </li>
         ))}
       </ul>
+      <VideoDetailDialog
+        source={resolvedSelectedVideo ? { kind: "feed", item: resolvedSelectedVideo } : null}
+        onClose={() => setSelectedVideo(null)}
+      />
     </div>
   );
 }
