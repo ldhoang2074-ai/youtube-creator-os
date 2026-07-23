@@ -109,8 +109,8 @@ export function DetailDialog({ open, onClose, title, description, children }: De
   }
 
   return createPortal(
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6">
-      <div aria-hidden="true" className="absolute inset-0 bg-zinc-950/50" />
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-ui-4 sm:p-ui-6">
+      <div aria-hidden="true" className="absolute inset-0 bg-ui-bg/80 backdrop-blur-sm" />
       <div
         ref={dialogRef}
         role="dialog"
@@ -118,14 +118,14 @@ export function DetailDialog({ open, onClose, title, description, children }: De
         aria-labelledby={titleId}
         aria-describedby={descriptionId}
         tabIndex={-1}
-        className="relative flex max-h-[calc(100dvh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg border border-zinc-200 bg-white text-zinc-950 shadow-xl dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 sm:max-h-[calc(100dvh-3rem)]"
+        className="relative flex max-h-[calc(100dvh-2rem)] w-full max-w-3xl flex-col overflow-hidden rounded-ui-dialog border border-ui-border bg-ui-panel text-ui-text shadow-2xl sm:max-h-[calc(100dvh-3rem)]"
       >
-        <div className="flex items-start justify-between gap-4 border-b border-zinc-200 px-4 py-4 dark:border-zinc-800 sm:px-6">
+        <div className="flex items-start justify-between gap-ui-4 border-b border-ui-border bg-ui-panel-elevated px-ui-4 py-ui-4 sm:px-ui-6">
           <div className="min-w-0">
-            <h2 id={titleId} className="break-words text-lg font-semibold">
+            <h2 id={titleId} className="break-words text-ui-section font-semibold tracking-tight text-ui-text sm:text-ui-page">
               {title}
             </h2>
-            <p id={descriptionId} className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+            <p id={descriptionId} className="mt-ui-1 text-ui-body-sm text-ui-text-muted">
               {description}
             </p>
           </div>
@@ -134,14 +134,14 @@ export function DetailDialog({ open, onClose, title, description, children }: De
             type="button"
             aria-label="Close details"
             onClick={() => onCloseRef.current()}
-            className="inline-flex size-9 shrink-0 items-center justify-center rounded-md text-zinc-700 outline-none hover:bg-zinc-100 focus-visible:ring-2 focus-visible:ring-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:focus-visible:ring-zinc-100"
+            className="inline-flex size-9 shrink-0 items-center justify-center rounded-ui-control border border-ui-border bg-ui-panel text-ui-text-secondary outline-none transition-colors hover:bg-ui-surface-muted hover:text-ui-text focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-panel-elevated"
           >
             <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 fill-none stroke-current stroke-2">
               <path d="M6 6l12 12M18 6 6 18" strokeLinecap="round" />
             </svg>
           </button>
         </div>
-        <div className="min-w-0 overflow-y-auto px-4 py-5 sm:px-6">{children}</div>
+        <div className="min-w-0 overflow-y-auto px-ui-4 py-ui-6 sm:px-ui-6">{children}</div>
       </div>
     </div>,
     document.body,

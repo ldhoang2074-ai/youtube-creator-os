@@ -113,7 +113,7 @@ export function ChannelAnalyzerClient() {
               This channel has no videos we could analyze yet.
             </div>
           ) : (
-            <Grid>
+            <Grid className="gap-ui-4 lg:gap-ui-6">
               {report.videos.map((video) => (
                 <VideoCard key={video.videoId} video={video} onViewDetails={setSelectedVideo} />
               ))}

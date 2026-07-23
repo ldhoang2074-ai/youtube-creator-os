@@ -29,10 +29,12 @@ interface MetricProps {
 function Metric({ label, value }: MetricProps) {
   return (
     <div className="min-w-0">
-      <dt className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+      <dt className="text-ui-label font-semibold uppercase tracking-[0.1em] text-ui-text-muted">
         {label}
       </dt>
-      <dd className="mt-1 break-words tabular-nums text-zinc-700 dark:text-zinc-300">{value}</dd>
+      <dd className="mt-ui-1 break-words tabular-nums text-ui-body-sm text-ui-text-secondary">
+        {value}
+      </dd>
     </div>
   );
 }
@@ -69,8 +71,8 @@ export function VideoDetailDialog({ source, onClose }: VideoDetailDialogProps) {
       title={video.title}
       description="Details from the current analyzed result. No new data has been fetched."
     >
-      <div className="flex flex-col gap-5">
-        <div className="aspect-video w-full overflow-hidden rounded-md bg-zinc-200 dark:bg-zinc-800">
+      <div className="flex min-w-0 flex-col gap-ui-5">
+        <div className="aspect-video w-full overflow-hidden rounded-ui-control border border-ui-border bg-ui-surface-muted">
           {video.thumbnailUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -83,11 +85,11 @@ export function VideoDetailDialog({ source, onClose }: VideoDetailDialogProps) {
               className="h-full w-full object-cover"
             />
           ) : (
-            <div aria-hidden="true" className="h-full w-full bg-zinc-200 dark:bg-zinc-800" />
+            <div aria-hidden="true" className="h-full w-full bg-ui-surface-muted" />
           )}
         </div>
 
-        <dl className="grid grid-cols-1 gap-x-6 gap-y-4 text-sm sm:grid-cols-2">
+        <dl className="grid grid-cols-1 gap-x-ui-6 gap-y-ui-4 sm:grid-cols-2">
           <Metric label="Published" value={new Date(video.publishedAt).toLocaleDateString()} />
           <Metric label="Duration" value={formatDuration(video.durationSeconds)} />
           {detailMetrics.map((metric) => (
