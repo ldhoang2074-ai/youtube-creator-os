@@ -40,27 +40,39 @@ documents and pure helpers in `lib/transcript/*`, no transcript provider,
 fetching, chunking, API route, or AI) is complete. G2B (YouTube URL & Video ID
 Parser: pure URL/reference parsing in `lib/youtube/video-id-parser.ts`, no
 network call, video existence check, API route, or transcript provider) is
-complete. All
-API access goes through
-`lib/youtube/request.ts` (server-only, API key via `x-goog-api-key` header,
-never in the URL). No database is used yet — everything is computed
-per-request from live YouTube data. `POST /api/opportunities` is only ever
-called when the user explicitly runs or re-runs an analysis (from
+complete. G2C (Transcript Intelligence MVP: accepts YouTube URLs and raw
+11-character video IDs, uses a server-only Supadata transcript provider,
+normalizes transcript domain documents, provides `POST /api/transcript` and
+the `/transcript` page, renders timestamped transcript segments, and downloads
+UTF-8 BOM TXT files containing timestamped segment lines only) is complete and
+merged. G2C does not include AI analysis or summarization, a database,
+authentication, persistence, or a transcript language selector. YouTube Data API access goes through `lib/youtube/request.ts`; the YouTube API
+key remains server-only and is sent through the `x-goog-api-key` header, never
+in the URL. Supadata transcript access goes through the server-only transcript
+provider, and Supadata credentials are never exposed to client code. No database
+is used. Analyzer, Compare, and Opportunity results are computed per request.
+Workspace snapshots remain client-only `localStorage`, while transcript results
+remain page-memory only and are not persisted. `POST /api/opportunities` is only
+ever called when the user explicitly runs or re-runs an analysis (from
 `/opportunities` directly, or via "Open these channels in Opportunity Feed"
 from `/workspace` followed by the user clicking "Find opportunities"
 themselves) — never automatically.
 
-Not yet implemented: transcript source adapters or fetching, transcript chunking,
-Supabase, database connection,
-authentication, dashboard,
-watchlist (ongoing tracking), cloud sync, time-series/growth tracking, idea
-generator, AI API, caching, rate limiting, deployment. Do not start any of
-these until a later stage is explicitly approved.
+Not yet implemented: transcript chunking, transcript AI analysis or
+summarization, transcript language selector, Supabase/database integration,
+authentication, cloud persistence/sync, ongoing watchlist tracking, time-series
+growth tracking, Content Gap engine, Idea Generator, AI API, caching, rate
+limiting, deployment, and a Chrome extension. Do not start any of these until a
+later stage is explicitly approved.
 
 UI1 (Product Shell & Navigation: shared responsive product shell, deterministic
 navigation metadata, and no feature business-logic changes) and its
 mobile-navigation hotfix are merged. The UI2 readiness audit is merged. The
 UI2 Stage 0 foundations, UI2 Stage 1 Analyzer video grid, UI2 Stage 2
 Workspace video grid, and UI2 Stage 3 Opportunities channel grid are merged.
-The current implementation stage is UI2 Stage 4 in-memory video and channel
-detail interactions.
+The current implementation stage is UI redesign foundation — UI-1A shell-only
+internationalization contracts. English and Vietnamese contracts are being
+introduced; Spanish is reserved for a later stage. Dictionaries are not yet
+connected to AppShell or product pages, and UI-1A includes no visible redesign.
+The dark visual redesign begins in UI-2. No authentication, locale cookies,
+language switching, route groups, or translated pages are implemented.
