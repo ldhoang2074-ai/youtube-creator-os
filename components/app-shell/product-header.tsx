@@ -18,8 +18,8 @@ export function ProductHeader({
   onOpenNavigation,
 }: ProductHeaderProps) {
   return (
-    <header className="border-b border-zinc-200 bg-white/90 px-4 py-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/90 sm:px-6 lg:px-10">
-      <div className="mx-auto flex w-full max-w-6xl items-center gap-3">
+    <header className="sticky top-0 z-30 border-b border-ui-border bg-ui-bg/90 px-ui-4 py-ui-4 backdrop-blur sm:px-ui-6 lg:px-ui-10">
+      <div className="mx-auto flex w-full max-w-[1600px] items-center gap-ui-3">
         <button
           ref={openButtonRef}
           type="button"
@@ -27,15 +27,15 @@ export function ProductHeader({
           aria-controls="mobile-product-navigation"
           aria-expanded={mobileNavigationOpen}
           onClick={onOpenNavigation}
-          className="inline-flex size-9 items-center justify-center rounded-md border border-zinc-300 text-zinc-700 outline-none hover:bg-zinc-100 focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-950 lg:hidden"
+          className="inline-flex size-9 items-center justify-center rounded-ui-control border border-ui-border bg-ui-panel text-ui-text-secondary outline-none hover:bg-ui-surface-muted hover:text-ui-text focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-bg lg:hidden"
         >
           <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 fill-none stroke-current stroke-2">
             <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
           </svg>
         </button>
         <div>
-          <h1 className="text-base font-semibold tracking-tight">{title}</h1>
-          <p className="mt-0.5 text-sm text-zinc-600 dark:text-zinc-400">{description}</p>
+          <h1 className="text-ui-section font-semibold tracking-tight text-ui-text sm:text-ui-page">{title}</h1>
+          <p className="mt-ui-1 text-ui-body-sm text-ui-text-muted">{description}</p>
         </div>
       </div>
     </header>

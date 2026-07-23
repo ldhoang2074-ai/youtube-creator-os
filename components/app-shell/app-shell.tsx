@@ -145,21 +145,21 @@ export function AppShell({ children, messages }: AppShellProps) {
   const page = getPageMetadata(pathname, messages);
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
+    <div className="min-h-screen overflow-x-hidden bg-ui-bg text-ui-text">
       <a
         href="#product-content"
-        className="sr-only z-50 rounded-md bg-zinc-950 px-3 py-2 text-sm font-medium text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4 dark:bg-zinc-50 dark:text-zinc-950"
+        className="sr-only z-50 rounded-ui-control bg-ui-accent px-ui-3 py-ui-2 text-ui-body-sm font-semibold text-ui-text focus:not-sr-only focus:fixed focus:left-ui-4 focus:top-ui-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-bg"
       >
         {messages.accessibility.skipToContent}
       </a>
 
-      <div className="flex min-h-screen" aria-hidden={mobileNavigationOpen ? true : undefined}>
-        <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950 lg:flex">
+      <div className="flex min-h-screen bg-ui-bg" aria-hidden={mobileNavigationOpen ? true : undefined}>
+        <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-ui-border bg-ui-sidebar lg:flex">
           <Brand brand={messages.brand} />
           <ProductNavigation pathname={pathname} messages={messages} />
         </aside>
 
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 bg-ui-bg">
           <ProductHeader
             title={page.title}
             description={page.description}
@@ -169,7 +169,7 @@ export function AppShell({ children, messages }: AppShellProps) {
             onOpenNavigation={() => setMobileNavigationOpen(true)}
           />
 
-          <main id="product-content" className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-10 lg:py-10">
+          <main id="product-content" className="mx-auto w-full max-w-[1600px] px-ui-4 py-ui-6 sm:px-ui-6 lg:px-ui-10 lg:py-ui-8">
             {children}
           </main>
         </div>
@@ -180,7 +180,7 @@ export function AppShell({ children, messages }: AppShellProps) {
           type="button"
           aria-label={messages.accessibility.closeNavigationOverlay}
           onClick={() => closeMobileNavigation()}
-          className="fixed inset-0 z-40 bg-zinc-950/30 lg:hidden"
+          className="fixed inset-0 z-40 bg-ui-bg/80 backdrop-blur-sm lg:hidden"
         />
       ) : null}
 
@@ -189,18 +189,18 @@ export function AppShell({ children, messages }: AppShellProps) {
         id="mobile-product-navigation"
         aria-label={messages.navigation.mobileAriaLabel}
         onKeyDown={handleDrawerKeyDown}
-        className={`fixed inset-y-0 left-0 z-50 h-full w-[min(19rem,calc(100vw-3rem))] flex-col border-r border-zinc-200 bg-white shadow-xl dark:border-zinc-800 dark:bg-zinc-950 lg:hidden ${
+        className={`fixed inset-y-0 left-0 z-50 h-full w-[min(19rem,calc(100vw-3rem))] flex-col border-r border-ui-border bg-ui-sidebar shadow-2xl lg:hidden ${
           mobileNavigationOpen ? "flex" : "hidden"
         }`}
       >
-        <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800">
+        <div className="flex items-center justify-between">
           <Brand brand={messages.brand} />
           <button
             ref={closeButtonRef}
             type="button"
             aria-label={messages.accessibility.closeNavigation}
             onClick={() => closeMobileNavigation()}
-            className="mr-3 inline-flex size-9 items-center justify-center rounded-md text-zinc-700 outline-none hover:bg-zinc-100 focus-visible:ring-2 focus-visible:ring-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:focus-visible:ring-zinc-100"
+            className="mr-ui-3 inline-flex size-9 items-center justify-center rounded-ui-control border border-ui-border bg-ui-panel text-ui-text-secondary outline-none hover:bg-ui-surface-muted hover:text-ui-text focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-sidebar"
           >
             <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 fill-none stroke-current stroke-2">
               <path d="M6 6l12 12M18 6 6 18" strokeLinecap="round" />

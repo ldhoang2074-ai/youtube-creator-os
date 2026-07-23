@@ -76,13 +76,18 @@ is reserved for a later stage, and the dictionaries are not connected to product
 pages. UI-1B defines color, spacing, radius, and typography tokens with Tailwind
 theme aliases for future work only; no token is consumed by the shell yet.
 
-The current implementation stage is UI-2A — localized AppShell wiring and
-component decomposition. The root Server Component passes default English shell
-messages to AppShell, while navigation structure no longer stores user-facing
-English copy. Brand, ProductHeader, and ProductNavigation are separated from
-AppShell. Current rendered English copy, visual appearance, and light/dark
-behavior remain unchanged, and drawer ownership and focus behavior remain in
-AppShell. Vietnamese contracts are testable, but no runtime language switching,
-locale cookies, or locale persistence exists. No theme switcher or theme
-persistence exists. The visible dark AppShell redesign begins in UI-2B. No route
-groups, login UI, or authentication exist.
+UI-2A localized and decomposed AppShell: the root Server Component passes
+default English shell messages to AppShell, navigation structure no longer stores
+user-facing English copy, and Brand, ProductHeader, and ProductNavigation are
+separated from AppShell. Drawer ownership and focus behavior remain in AppShell.
+
+The current implementation stage is UI-2B — visible dark AppShell redesign.
+UI-2B applies the semantic tokens to the product shell: the desktop sidebar,
+mobile drawer, brand, header, navigation, and content frame now use the dark
+visual system. The visible redesign is limited to AppShell; product pages are
+not redesigned yet, and the landing page remains unchanged. Navigation icons are
+local inline SVGs, with no external icon dependency added. Existing drawer and
+accessibility behavior remains. No authentication, login UI, user, account,
+credits, or notification controls exist. No runtime locale switching, locale
+cookie, locale persistence, route group, or route change exists. The next UI
+stage redesigns core product pages.
