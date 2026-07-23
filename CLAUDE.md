@@ -91,3 +91,8 @@ accessibility behavior remains. No authentication, login UI, user, account,
 credits, or notification controls exist. No runtime locale switching, locale
 cookie, locale persistence, route group, or route change exists. The next UI
 stage redesigns core product pages.
+
+The current implementation stage is UI-3A — Analyzer visual redesign. UI-3A
+redesigns only the Analyzer page frame, input and result states, and channel
+summary using the existing semantic dark tokens. It is implemented on this branch and
+remains limited to the reviewed UI-3A scope.

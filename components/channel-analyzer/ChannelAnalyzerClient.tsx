@@ -58,8 +58,11 @@ export function ChannelAnalyzerClient() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
+    <div className="flex min-w-0 flex-col gap-ui-6">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-ui-4 rounded-ui-panel border border-ui-border bg-ui-panel p-ui-4 sm:flex-row sm:items-center sm:p-ui-6"
+      >
         <label htmlFor="channel-input" className="sr-only">
           Channel URL or @handle
         </label>
@@ -69,31 +72,44 @@ export function ChannelAnalyzerClient() {
           value={input}
           onChange={(event) => setInput(event.target.value)}
           placeholder="Channel URL or @handle"
-          className="flex-1 rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-500 dark:border-zinc-700 dark:bg-zinc-900"
+          className="min-w-0 flex-1 rounded-ui-control border border-ui-border bg-ui-surface-muted px-ui-3 py-ui-2 text-ui-body text-ui-text outline-none placeholder:text-ui-text-muted focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-panel"
         />
         <button
           type="submit"
           disabled={status === "loading"}
-          className="rounded-md bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors hover:bg-[#383838] disabled:opacity-50 dark:hover:bg-[#ccc]"
+          className="w-full rounded-ui-control bg-ui-accent px-ui-4 py-ui-2 text-ui-body-sm font-semibold text-ui-text transition-colors hover:bg-ui-accent-hover focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-panel disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
           {status === "loading" ? "Analyzing..." : "Analyze channel"}
         </button>
       </form>
 
+      {status === "loading" ? (
+        <div
+          role="status"
+          className="flex items-center gap-ui-3 rounded-ui-panel border border-ui-border bg-ui-panel p-ui-4 text-ui-body-sm text-ui-text-secondary sm:p-ui-6"
+        >
+          <span
+            aria-hidden="true"
+            className="size-5 shrink-0 animate-spin rounded-ui-pill border-2 border-ui-border border-t-ui-accent"
+          />
+          <span>Analyzing channel...</span>
+        </div>
+      ) : null}
+
       {status === "error" && errorMessage ? (
         <p
           role="alert"
-          className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-300"
+          className="rounded-ui-panel border border-ui-danger/40 bg-ui-danger/10 px-ui-4 py-ui-3 text-ui-body-sm text-ui-danger"
         >
           {errorMessage}
         </p>
       ) : null}
 
       {status === "success" && report ? (
-        <div className="flex flex-col gap-4">
+        <div className="flex min-w-0 flex-col gap-ui-4">
           <ChannelSummary report={report} />
           {report.videos.length === 0 ? (
-            <div className="rounded-md border border-dashed border-zinc-300 px-4 py-8 text-center text-sm text-zinc-500 dark:border-zinc-700">
+            <div className="rounded-ui-panel border border-dashed border-ui-border bg-ui-panel px-ui-4 py-ui-8 text-center text-ui-body-sm text-ui-text-muted">
               This channel has no videos we could analyze yet.
             </div>
           ) : (
