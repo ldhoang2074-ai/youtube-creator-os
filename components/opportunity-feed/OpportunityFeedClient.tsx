@@ -7,6 +7,7 @@ import type {
   OpportunityFeedResult,
 } from "@/lib/channel-analyzer/types";
 import { isApiErrorBody } from "@/lib/http/api-error";
+import { usePersistentDraft } from "@/lib/drafts/use-persistent-draft";
 import { analyzeTitlePatterns } from "@/lib/title-patterns/analyze-title-patterns";
 import { SaveResearchButton } from "@/components/workspace/SaveResearchButton";
 import { TitlePatternPanel } from "@/components/title-patterns/TitlePatternPanel";
@@ -20,6 +21,7 @@ type Status = "idle" | "loading" | "success" | "error";
 
 const MIN_CHANNELS = 2;
 const MAX_CHANNELS = 5;
+const DRAFT_STORAGE_KEY = "youtube-creator-os:draft:opportunities:v1";
 
 type SelectedOpportunityDetail =
   | {
@@ -78,9 +80,9 @@ interface OpportunityFeedClientProps {
 }
 
 export function OpportunityFeedClient({ initialInputs }: OpportunityFeedClientProps) {
-  const [rawInput, setRawInput] = useState(() =>
-    initialInputs && initialInputs.length > 0 ? initialInputs.join("\n") : "",
-  );
+  const [rawInput, setRawInput] = usePersistentDraft(DRAFT_STORAGE_KEY, {
+    priorityValue: initialInputs && initialInputs.length > 0 ? initialInputs.join("\n") : "",
+  });
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<OpportunityFeedResult | null>(null);
   const [channels, setChannels] = useState<readonly OpportunityChannelSummary[]>([]);

@@ -3,15 +3,17 @@
 import { useState, type FormEvent } from "react";
 import type { CompareChannelsResult } from "@/lib/channel-analyzer/types";
 import { isApiErrorBody } from "@/lib/http/api-error";
+import { usePersistentDraft } from "@/lib/drafts/use-persistent-draft";
 import { ComparisonTable } from "./ComparisonTable";
 
 type Status = "idle" | "loading" | "success" | "error";
 
 const MIN_CHANNELS = 2;
 const MAX_CHANNELS = 5;
+const DRAFT_STORAGE_KEY = "youtube-creator-os:draft:compare:v1";
 
 export function ChannelCompareClient() {
-  const [rawInput, setRawInput] = useState("");
+  const [rawInput, setRawInput] = usePersistentDraft(DRAFT_STORAGE_KEY);
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<CompareChannelsResult | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

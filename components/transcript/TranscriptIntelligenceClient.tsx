@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { isApiErrorBody } from "@/lib/http/api-error";
+import { usePersistentDraft } from "@/lib/drafts/use-persistent-draft";
 import type {
   TranscriptDocument,
   TranscriptGenerationKind,
@@ -18,6 +19,8 @@ const GENERATION_KINDS: readonly TranscriptGenerationKind[] = [
   "auto-generated",
   "unknown",
 ];
+
+const DRAFT_STORAGE_KEY = "youtube-creator-os:draft:transcript:v1";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -79,7 +82,7 @@ function getSafeApiError(
 }
 
 export function TranscriptIntelligenceClient() {
-  const [input, setInput] = useState("");
+  const [input, setInput] = usePersistentDraft(DRAFT_STORAGE_KEY);
   const [status, setStatus] = useState<Status>("idle");
   const [transcript, setTranscript] = useState<TranscriptDocument | null>(null);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
