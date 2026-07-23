@@ -8,6 +8,7 @@ import type {
   TranscriptGenerationKind,
   TranscriptSegment,
 } from "@/lib/transcript/types";
+import { TranscriptDownloadButton } from "./TranscriptDownloadButton";
 import { TranscriptSegmentList } from "./TranscriptSegmentList";
 
 type Status = "idle" | "loading" | "success" | "empty" | "error";
@@ -258,6 +259,9 @@ export function TranscriptIntelligenceClient() {
           tabIndex={-1}
           className="outline-none focus:ring-2 focus:ring-zinc-400"
         >
+          <div className="mb-4 flex justify-end">
+            <TranscriptDownloadButton transcript={transcript} />
+          </div>
           <TranscriptSegmentList transcript={transcript} />
         </div>
       ) : null}
