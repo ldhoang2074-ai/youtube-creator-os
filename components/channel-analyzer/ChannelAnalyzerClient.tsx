@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import type { ChannelAnalysisReport, VideoAnalysis } from "@/lib/channel-analyzer/types";
 import { isApiErrorBody } from "@/lib/http/api-error";
+import { usePersistentDraft } from "@/lib/drafts/use-persistent-draft";
 import { Grid } from "@/components/ui/Grid";
 import { VideoDetailDialog } from "@/components/video/VideoDetailDialog";
 import { ChannelSummary } from "./ChannelSummary";
@@ -10,8 +11,10 @@ import { VideoCard } from "./VideoCard";
 
 type Status = "idle" | "loading" | "success" | "error";
 
+const DRAFT_STORAGE_KEY = "youtube-creator-os:draft:analyzer:v1";
+
 export function ChannelAnalyzerClient() {
-  const [input, setInput] = useState("");
+  const [input, setInput] = usePersistentDraft(DRAFT_STORAGE_KEY);
   const [status, setStatus] = useState<Status>("idle");
   const [report, setReport] = useState<ChannelAnalysisReport | null>(null);
   const [selectedVideo, setSelectedVideo] = useState<VideoAnalysis | null>(null);

@@ -100,10 +100,28 @@ content, and the shared DetailDialog visual shell using existing semantic
 tokens while preserving all data, interaction, accessibility, and
 dialog-focus behavior.
 
-The current implementation stage is UI-3C — Compare page visual redesign.
-UI-3C redesigns the `/compare` page frame, form, and loading and error states,
-and replaces the fixed-width horizontal comparison table with responsive
-channel cards using the existing shared `Grid` component and semantic dark UI
-tokens. It preserves the existing `POST /api/compare` request, validation,
-result ordering, data contract, accessibility roles, and business behavior,
-and remains limited to the reviewed UI-3C scope.
+UI-3C redesigned the `/compare` page frame, form, and loading and error
+states, and replaced the fixed-width horizontal comparison table with
+responsive channel cards using the existing shared `Grid` component and
+semantic dark UI tokens, preserving the existing `POST /api/compare` request,
+validation, result ordering, data contract, accessibility roles, and
+business behavior.
+
+The current implementation stage is UX-1 — Persistent input drafts. UX-1
+auto-saves the raw text typed into the Analyzer, Compare, Opportunity Feed,
+and Transcript input fields to `localStorage` via a shared
+`usePersistentDraft` hook (`lib/drafts/use-persistent-draft.ts` and
+`lib/drafts/storage.ts`), namespaced per page under
+`youtube-creator-os:draft:{analyzer,compare,opportunities,transcript}:v1`,
+and restores the draft when the page is revisited or reloaded. Clearing a
+field removes its stored key. On the Opportunity Feed page, `initialInputs`
+passed in from the query string or Workspace takes priority over any stored
+draft and becomes the new draft. `localStorage` is only ever accessed on the
+client: the stored draft is read through `useSyncExternalStore` with an
+SSR/hydration-safe server snapshot, while writing or clearing the stored
+draft happens inside a `useEffect`. Storage errors are handled so the input
+experience keeps working regardless of storage availability. UX-1 does not
+submit forms, call any
+API, or persist analysis/transcript results — only the raw input text. It is
+implemented on this branch and remains limited to the reviewed UX-1 scope;
+it has not been merged.
