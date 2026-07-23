@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AppShell } from "@/components/app-shell/app-shell";
+import { getMessages } from "@/lib/i18n/messages";
+import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,13 +31,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const messages = getMessages(DEFAULT_LOCALE);
+
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <AppShell>{children}</AppShell>
+        <AppShell messages={messages}>{children}</AppShell>
       </body>
     </html>
   );

@@ -70,16 +70,19 @@ navigation metadata, and no feature business-logic changes) and its
 mobile-navigation hotfix are merged. The UI2 readiness audit is merged. The
 UI2 Stage 0 foundations, UI2 Stage 1 Analyzer video grid, UI2 Stage 2
 Workspace video grid, and UI2 Stage 3 Opportunities channel grid are merged.
-UI-1A shell-only internationalization contracts are complete and merged. English and
-Vietnamese contracts exist, Spanish is reserved for a later stage, and the
-dictionaries are not connected to AppShell or product pages. No locale cookies,
-language switching, route groups, or translated pages are implemented.
+UI-1A shell-only internationalization contracts and UI-1B semantic design
+tokens are complete and merged. English and Vietnamese contracts exist, Spanish
+is reserved for a later stage, and the dictionaries are not connected to product
+pages. UI-1B defines color, spacing, radius, and typography tokens with Tailwind
+theme aliases for future work only; no token is consumed by the shell yet.
 
-The current implementation stage is UI redesign foundation — UI-1B semantic
-design tokens. UI-1B defines a dark-first semantic CSS token contract covering
-color, spacing, radius, and typography, with Tailwind theme aliases for future
-work only. The tokens are not consumed by
-AppShell, pages, components, or existing UI, so the current visual output and
-light/dark behavior remain unchanged. No theme switcher, theme persistence, or
-locale runtime integration exists. The AppShell redesign begins in UI-2. No
-authentication is included.
+The current implementation stage is UI-2A — localized AppShell wiring and
+component decomposition. The root Server Component passes default English shell
+messages to AppShell, while navigation structure no longer stores user-facing
+English copy. Brand, ProductHeader, and ProductNavigation are separated from
+AppShell. Current rendered English copy, visual appearance, and light/dark
+behavior remain unchanged, and drawer ownership and focus behavior remain in
+AppShell. Vietnamese contracts are testable, but no runtime language switching,
+locale cookies, or locale persistence exists. No theme switcher or theme
+persistence exists. The visible dark AppShell redesign begins in UI-2B. No route
+groups, login UI, or authentication exist.
