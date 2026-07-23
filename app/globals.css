@@ -3,11 +3,88 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --ui-bg: #09090b;
+  --ui-sidebar: #0c0c0f;
+  --ui-panel: #111114;
+  --ui-panel-elevated: #17171c;
+  --ui-surface-muted: #1d1d23;
+  --ui-border: #2a2a32;
+  --ui-text: #fafafa;
+  --ui-text-secondary: #d4d4d8;
+  --ui-text-muted: #8b8b95;
+  --ui-accent: #dc2626;
+  --ui-accent-hover: #b91c1c;
+  --ui-success: #22c55e;
+  --ui-warning: #f59e0b;
+  --ui-danger: #ef4444;
+  --ui-focus: #f87171;
+
+  --ui-space-1: 0.25rem;
+  --ui-space-2: 0.5rem;
+  --ui-space-3: 0.75rem;
+  --ui-space-4: 1rem;
+  --ui-space-6: 1.5rem;
+  --ui-space-8: 2rem;
+  --ui-space-10: 2.5rem;
+  --ui-space-12: 3rem;
+
+  --ui-radius-control: 0.375rem;
+  --ui-radius-panel: 0.625rem;
+  --ui-radius-dialog: 0.875rem;
+  --ui-radius-pill: 9999px;
+
+  --ui-text-label: 0.75rem;
+  --ui-text-label-line-height: 1rem;
+  --ui-text-body-sm: 0.875rem;
+  --ui-text-body-sm-line-height: 1.25rem;
+  --ui-text-body: 1rem;
+  --ui-text-body-line-height: 1.5rem;
+  --ui-text-section: 1.25rem;
+  --ui-text-section-line-height: 1.75rem;
+  --ui-text-page: 1.75rem;
+  --ui-text-page-line-height: 2.25rem;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-ui-bg: var(--ui-bg);
+  --color-ui-sidebar: var(--ui-sidebar);
+  --color-ui-panel: var(--ui-panel);
+  --color-ui-panel-elevated: var(--ui-panel-elevated);
+  --color-ui-surface-muted: var(--ui-surface-muted);
+  --color-ui-border: var(--ui-border);
+  --color-ui-text: var(--ui-text);
+  --color-ui-text-secondary: var(--ui-text-secondary);
+  --color-ui-text-muted: var(--ui-text-muted);
+  --color-ui-accent: var(--ui-accent);
+  --color-ui-accent-hover: var(--ui-accent-hover);
+  --color-ui-success: var(--ui-success);
+  --color-ui-warning: var(--ui-warning);
+  --color-ui-danger: var(--ui-danger);
+  --color-ui-focus: var(--ui-focus);
+  --spacing-ui-1: var(--ui-space-1);
+  --spacing-ui-2: var(--ui-space-2);
+  --spacing-ui-3: var(--ui-space-3);
+  --spacing-ui-4: var(--ui-space-4);
+  --spacing-ui-6: var(--ui-space-6);
+  --spacing-ui-8: var(--ui-space-8);
+  --spacing-ui-10: var(--ui-space-10);
+  --spacing-ui-12: var(--ui-space-12);
+  --radius-ui-control: var(--ui-radius-control);
+  --radius-ui-panel: var(--ui-radius-panel);
+  --radius-ui-dialog: var(--ui-radius-dialog);
+  --radius-ui-pill: var(--ui-radius-pill);
+  --text-ui-label: var(--ui-text-label);
+  --text-ui-label--line-height: var(--ui-text-label-line-height);
+  --text-ui-body-sm: var(--ui-text-body-sm);
+  --text-ui-body-sm--line-height: var(--ui-text-body-sm-line-height);
+  --text-ui-body: var(--ui-text-body);
+  --text-ui-body--line-height: var(--ui-text-body-line-height);
+  --text-ui-section: var(--ui-text-section);
+  --text-ui-section--line-height: var(--ui-text-section-line-height);
+  --text-ui-page: var(--ui-text-page);
+  --text-ui-page--line-height: var(--ui-text-page-line-height);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
