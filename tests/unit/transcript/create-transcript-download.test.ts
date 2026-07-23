@@ -37,16 +37,11 @@ function createTranscript(
 }
 
 describe("createTranscriptDownloadText", () => {
-  it("creates the exact heading, metadata, blank line, and segment format", () => {
+  it("creates exactly the timestamped segment lines", () => {
     const text = createTranscriptDownloadText(createTranscript());
 
     expect(text).toBe(
       [
-        "YouTube Transcript",
-        "Video ID: dQw4w9WgXcQ",
-        "Language: en",
-        "Generation: Unknown",
-        "",
         "[0:01] First segment text",
         "[1:02] Second segment text",
         "",
@@ -54,15 +49,14 @@ describe("createTranscriptDownloadText", () => {
     );
   });
 
-  it.each([
-    ["manual", "Manual"],
-    ["auto-generated", "Auto-generated"],
-    ["unknown", "Unknown"],
-  ] as const)("maps %s generation to %s", (generationKind, label) => {
+  it.each(["manual", "auto-generated", "unknown"] as const)(
+    "omits %s generation metadata",
+    (generationKind) => {
     const text = createTranscriptDownloadText(createTranscript(generationKind));
 
-    expect(text).toContain(`Generation: ${label}\n`);
-  });
+      expect(text).not.toContain("Generation:");
+    },
+  );
 
   it("uses existing timestamp behavior below, at, and above one hour", () => {
     const transcript = createTranscript("unknown", [
@@ -138,21 +132,31 @@ describe("createTranscriptDownloadText", () => {
     expect(text).toContain(`[0:00] ${segmentText}\n`);
   });
 
-  it("does not include duration or provider information", () => {
+  it("does not include heading, metadata, duration, provider, or raw JSON", () => {
     const text = createTranscriptDownloadText(createTranscript());
 
+    expect(text).not.toContain("YouTube Transcript");
+    expect(text).not.toContain("Video ID:");
+    expect(text).not.toContain("dQw4w9WgXcQ");
+    expect(text).not.toContain("Language:");
+    expect(text).not.toContain("Generation:");
     expect(text).not.toContain("98765.4321");
     expect(text).not.toContain("youtube-captions");
     expect(text).not.toContain("Provider:");
+    expect(text).not.toContain('"segments"');
   });
 
-  it("uses exactly one metadata separator blank line and one final newline", () => {
+  it("uses no blank separator and ends with exactly one final newline", () => {
     const text = createTranscriptDownloadText(createTranscript());
 
-    expect(text).toContain("Generation: Unknown\n\n[0:01]");
-    expect(text).not.toContain("Generation: Unknown\n\n\n");
+    expect(text.startsWith("[0:01] First segment text")).toBe(true);
+    expect(text).not.toContain("\n\n");
     expect(text.endsWith("\n")).toBe(true);
     expect(text.endsWith("\n\n")).toBe(false);
+  });
+
+  it("returns an empty string when there are no segments", () => {
+    expect(createTranscriptDownloadText(createTranscript("unknown", []))).toBe("");
   });
 });
 
