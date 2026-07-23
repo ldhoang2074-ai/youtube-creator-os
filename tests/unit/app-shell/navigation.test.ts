@@ -12,7 +12,13 @@ describe("product navigation", () => {
     const enabledItems = getEnabledNavigationItems();
     const routes = enabledItems.map((item) => item.href);
 
-    expect(routes).toEqual(["/analyzer", "/compare", "/opportunities", "/workspace"]);
+    expect(routes).toEqual([
+      "/analyzer",
+      "/compare",
+      "/opportunities",
+      "/workspace",
+      "/transcript",
+    ]);
     expect(new Set(routes).size).toBe(routes.length);
     expect(enabledItems.every((item) => item.href !== undefined && item.href.length > 0)).toBe(true);
     expect(enabledItems.some((item) => item.label === "Overview")).toBe(false);
@@ -25,7 +31,6 @@ describe("product navigation", () => {
 
     expect(disabledItems.map((item) => item.label)).toEqual([
       "Title Patterns",
-      "Transcript Intelligence",
       "Content Gaps",
       "Idea Generator",
     ]);
@@ -37,7 +42,7 @@ describe("product navigation", () => {
       (item) => item.status === "coming-soon",
     );
 
-    expect(comingSoonItems).toHaveLength(3);
+    expect(comingSoonItems).toHaveLength(2);
     expect(comingSoonItems.every((item) => item.href === undefined)).toBe(true);
   });
 
@@ -74,6 +79,7 @@ describe("product navigation", () => {
     ["/opportunities", "Opportunities"],
     ["/workspace", "Research Workspace"],
     ["/compare", "Channel Compare"],
+    ["/transcript", "Transcript Intelligence"],
   ])("activates only %s for %s", (pathname, label) => {
     const activeItems = getActiveNavigationItems(pathname);
 
@@ -82,14 +88,31 @@ describe("product navigation", () => {
   });
 
   it("uses prefix matching for future child routes without activating another item", () => {
-    const activeItems = getActiveNavigationItems("/opportunities/saved");
+    const opportunitiesItems = getActiveNavigationItems("/opportunities/saved");
+    const transcriptItems = getActiveNavigationItems("/transcript/example");
 
-    expect(activeItems).toHaveLength(1);
-    expect(activeItems[0]?.label).toBe("Opportunities");
+    expect(opportunitiesItems).toHaveLength(1);
+    expect(opportunitiesItems[0]?.label).toBe("Opportunities");
+    expect(transcriptItems).toHaveLength(1);
+    expect(transcriptItems[0]?.label).toBe("Transcript Intelligence");
+  });
+
+  it("does not activate Transcript Intelligence for a pathname sharing only part of its prefix", () => {
+    expect(getActiveNavigationItems("/transcription")).toEqual([]);
   });
 
   it("never activates more than one navigation item for a given pathname", () => {
-    const pathnames = ["/", "/analyzer", "/compare", "/opportunities", "/workspace", "/opportunities/saved"];
+    const pathnames = [
+      "/",
+      "/analyzer",
+      "/compare",
+      "/opportunities",
+      "/workspace",
+      "/transcript",
+      "/transcript/example",
+      "/transcription",
+      "/opportunities/saved",
+    ];
 
     for (const pathname of pathnames) {
       expect(getActiveNavigationItems(pathname).length).toBeLessThanOrEqual(1);
@@ -113,8 +136,13 @@ describe("product navigation", () => {
       title: "Research Workspace",
       description: "Save and revisit channel research sessions.",
     });
+    expect(getPageMetadata("/transcript")).toEqual({
+      title: "Transcript Intelligence",
+      description: "Fetch and review timestamped YouTube transcripts.",
+    });
     expect(isProductRoute("/")).toBe(false);
     expect(isProductRoute("/workspace")).toBe(true);
+    expect(isProductRoute("/transcript")).toBe(true);
   });
 
   it("falls back to a default title and description for a pathname with no active item", () => {
