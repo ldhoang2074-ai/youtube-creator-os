@@ -15,42 +15,59 @@ interface ChannelSummaryProps {
 
 export function ChannelSummary({ report }: ChannelSummaryProps) {
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-800 sm:flex-row sm:items-center">
+    <section className="flex flex-col gap-ui-5 rounded-ui-panel border border-ui-border bg-ui-panel p-ui-4 sm:p-ui-6">
+      <div className="flex min-w-0 flex-col gap-ui-4 sm:flex-row sm:items-center">
       {report.thumbnailUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={report.thumbnailUrl}
           alt=""
-          className="h-16 w-16 shrink-0 rounded-full object-cover"
+          className="size-16 shrink-0 rounded-full border border-ui-border object-cover"
         />
       ) : (
-        <div className="h-16 w-16 shrink-0 rounded-full bg-zinc-200 dark:bg-zinc-800" />
+        <div className="size-16 shrink-0 rounded-full border border-ui-border bg-ui-surface-muted" />
       )}
-      <div className="flex-1">
-        <h2 className="text-lg font-semibold text-zinc-950 dark:text-zinc-50">{report.title}</h2>
-        <dl className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-zinc-600 dark:text-zinc-400 sm:grid-cols-5">
-          <div>
-            <dt className="font-medium text-zinc-500 dark:text-zinc-500">Subscribers</dt>
-            <dd>{report.subscriberCount}</dd>
-          </div>
-          <div>
-            <dt className="font-medium text-zinc-500 dark:text-zinc-500">Total views</dt>
-            <dd>{report.totalViewCount}</dd>
-          </div>
-          <div>
-            <dt className="font-medium text-zinc-500 dark:text-zinc-500">Video count</dt>
-            <dd>{report.videoCount}</dd>
-          </div>
-          <div>
-            <dt className="font-medium text-zinc-500 dark:text-zinc-500">Median views</dt>
-            <dd>{report.medianViews ?? "—"}</dd>
-          </div>
-          <div>
-            <dt className="font-medium text-zinc-500 dark:text-zinc-500">Analyzed videos</dt>
-            <dd>{report.analyzedVideoCount}</dd>
-          </div>
-        </dl>
+      <div className="min-w-0 flex-1">
+        <p className="text-ui-label font-semibold uppercase tracking-[0.14em] text-ui-text-muted">
+          Channel analysis
+        </p>
+        <h2 className="mt-ui-1 break-words text-ui-section font-semibold tracking-tight text-ui-text sm:text-ui-page">
+          {report.title}
+        </h2>
       </div>
-    </div>
+      </div>
+      <dl className="grid grid-cols-2 gap-ui-3 border-t border-ui-border pt-ui-4 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="min-w-0">
+          <dt className="text-ui-label font-semibold uppercase tracking-[0.1em] text-ui-text-muted">Subscribers</dt>
+          <dd className="mt-ui-1 break-words text-ui-body font-semibold tabular-nums text-ui-text">
+            {report.subscriberCount}
+          </dd>
+        </div>
+        <div className="min-w-0">
+          <dt className="text-ui-label font-semibold uppercase tracking-[0.1em] text-ui-text-muted">Total views</dt>
+          <dd className="mt-ui-1 break-words text-ui-body font-semibold tabular-nums text-ui-text">
+            {report.totalViewCount}
+          </dd>
+        </div>
+        <div className="min-w-0">
+          <dt className="text-ui-label font-semibold uppercase tracking-[0.1em] text-ui-text-muted">Video count</dt>
+          <dd className="mt-ui-1 break-words text-ui-body font-semibold tabular-nums text-ui-text">
+            {report.videoCount}
+          </dd>
+        </div>
+        <div className="min-w-0">
+          <dt className="text-ui-label font-semibold uppercase tracking-[0.1em] text-ui-text-muted">Median views</dt>
+          <dd className="mt-ui-1 break-words text-ui-body font-semibold tabular-nums text-ui-text">
+            {report.medianViews ?? "—"}
+          </dd>
+        </div>
+        <div className="min-w-0">
+          <dt className="text-ui-label font-semibold uppercase tracking-[0.1em] text-ui-text-muted">Analyzed videos</dt>
+          <dd className="mt-ui-1 break-words text-ui-body font-semibold tabular-nums text-ui-text">
+            {report.analyzedVideoCount}
+          </dd>
+        </div>
+      </dl>
+    </section>
   );
 }
