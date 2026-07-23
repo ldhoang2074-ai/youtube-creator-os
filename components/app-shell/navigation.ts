@@ -52,6 +52,14 @@ export const NAVIGATION_SECTIONS: readonly NavigationSection[] = [
         description: "Save and revisit channel research sessions.",
       },
       {
+        label: "Transcript Intelligence",
+        href: "/transcript",
+        match: "prefix",
+        status: "available",
+        title: "Transcript Intelligence",
+        description: "Fetch and review timestamped YouTube transcripts.",
+      },
+      {
         label: "Title Patterns",
         status: "embedded",
         title: "Title Patterns",
@@ -62,12 +70,6 @@ export const NAVIGATION_SECTIONS: readonly NavigationSection[] = [
   {
     label: "Coming soon",
     items: [
-      {
-        label: "Transcript Intelligence",
-        status: "coming-soon",
-        title: "Transcript Intelligence",
-        description: "Transcript research tools are planned for a later stage.",
-      },
       {
         label: "Content Gaps",
         status: "coming-soon",
