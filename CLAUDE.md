@@ -70,9 +70,16 @@ navigation metadata, and no feature business-logic changes) and its
 mobile-navigation hotfix are merged. The UI2 readiness audit is merged. The
 UI2 Stage 0 foundations, UI2 Stage 1 Analyzer video grid, UI2 Stage 2
 Workspace video grid, and UI2 Stage 3 Opportunities channel grid are merged.
-The current implementation stage is UI redesign foundation — UI-1A shell-only
-internationalization contracts. English and Vietnamese contracts are being
-introduced; Spanish is reserved for a later stage. Dictionaries are not yet
-connected to AppShell or product pages, and UI-1A includes no visible redesign.
-The dark visual redesign begins in UI-2. No authentication, locale cookies,
+UI-1A shell-only internationalization contracts are complete and merged. English and
+Vietnamese contracts exist, Spanish is reserved for a later stage, and the
+dictionaries are not connected to AppShell or product pages. No locale cookies,
 language switching, route groups, or translated pages are implemented.
+
+The current implementation stage is UI redesign foundation — UI-1B semantic
+design tokens. UI-1B defines a dark-first semantic CSS token contract covering
+color, spacing, radius, and typography, with Tailwind theme aliases for future
+work only. The tokens are not consumed by
+AppShell, pages, components, or existing UI, so the current visual output and
+light/dark behavior remain unchanged. No theme switcher, theme persistence, or
+locale runtime integration exists. The AppShell redesign begins in UI-2. No
+authentication is included.
