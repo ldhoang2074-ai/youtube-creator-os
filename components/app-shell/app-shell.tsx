@@ -1,119 +1,22 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { flushSync } from "react-dom";
-import {
-  getPageMetadata,
-  isNavigationItemActive,
-  isProductRoute,
-  NAVIGATION_SECTIONS,
-  type NavigationItem,
-} from "./navigation";
+import type { ShellMessages } from "@/lib/i18n/messages";
+import { Brand } from "./brand";
+import { ProductHeader } from "./product-header";
+import { ProductNavigation } from "./product-navigation";
+import { getPageMetadata, isProductRoute } from "./navigation";
 
 interface AppShellProps {
   readonly children: ReactNode;
-}
-
-interface ProductNavigationProps {
-  readonly pathname: string;
-  readonly onNavigate?: (href: string) => void;
+  readonly messages: ShellMessages;
 }
 
 const DRAWER_FOCUSABLE_SELECTOR = 'a[href], button:not([disabled])';
 
-function getStatusLabel(item: NavigationItem): string | undefined {
-  if (item.status === "coming-soon") {
-    return "Soon";
-  }
-  if (item.status === "embedded") {
-    return "Inside research results";
-  }
-  return undefined;
-}
-
-function ProductNavigation({ pathname, onNavigate }: ProductNavigationProps) {
-  return (
-    <nav aria-label="Product navigation" className="flex flex-1 flex-col gap-6 overflow-y-auto px-3 py-5">
-      {NAVIGATION_SECTIONS.map((section) => (
-        <div key={section.label}>
-          <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-500 dark:text-zinc-400">
-            {section.label}
-          </p>
-          <ul className="mt-2 flex flex-col gap-1">
-            {section.items.map((item) => {
-              const active = isNavigationItemActive(item, pathname);
-              const statusLabel = getStatusLabel(item);
-              const itemClassName = `flex min-h-9 items-center justify-between rounded-md px-3 py-2 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-offset-2 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-950 ${
-                active
-                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-950"
-                  : item.status === "available"
-                    ? "text-zinc-700 hover:bg-zinc-100 hover:text-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
-                    : "cursor-default text-zinc-500 dark:text-zinc-400"
-              }`;
-
-              return (
-                <li key={item.label}>
-                  {item.href !== undefined ? (
-                    <Link
-                      href={item.href}
-                      aria-current={active ? "page" : undefined}
-                      className={itemClassName}
-                      onClick={(event: MouseEvent<HTMLAnchorElement>) => {
-                        if (onNavigate === undefined) {
-                          return;
-                        }
-
-                        if (
-                          event.defaultPrevented ||
-                          event.button !== 0 ||
-                          event.metaKey ||
-                          event.ctrlKey ||
-                          event.shiftKey ||
-                          event.altKey
-                        ) {
-                          return;
-                        }
-
-                        event.preventDefault();
-                        onNavigate(item.href as string);
-                      }}
-                    >
-                      <span>{item.label}</span>
-                    </Link>
-                  ) : (
-                    <span aria-disabled="true" className={itemClassName}>
-                      <span>{item.label}</span>
-                      {statusLabel !== undefined ? (
-                        <span className="rounded border border-zinc-300 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-600 dark:border-zinc-700 dark:text-zinc-300">
-                          {statusLabel}
-                        </span>
-                      ) : null}
-                    </span>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      ))}
-    </nav>
-  );
-}
-
-function Brand() {
-  return (
-    <Link
-      href="/"
-      className="flex items-center px-6 py-5 text-sm font-semibold tracking-tight text-zinc-950 outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-inset dark:text-zinc-50 dark:focus-visible:ring-zinc-100"
-    >
-      YouTube Creator OS
-    </Link>
-  );
-}
-
-export function AppShell({ children }: AppShellProps) {
+export function AppShell({ children, messages }: AppShellProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false);
@@ -239,47 +142,34 @@ export function AppShell({ children }: AppShellProps) {
     return children;
   }
 
-  const page = getPageMetadata(pathname);
+  const page = getPageMetadata(pathname, messages);
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
+    <div className="min-h-screen overflow-x-hidden bg-ui-bg text-ui-text">
       <a
         href="#product-content"
-        className="sr-only z-50 rounded-md bg-zinc-950 px-3 py-2 text-sm font-medium text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4 dark:bg-zinc-50 dark:text-zinc-950"
+        className="sr-only z-50 rounded-ui-control bg-ui-accent px-ui-3 py-ui-2 text-ui-body-sm font-semibold text-ui-text focus:not-sr-only focus:fixed focus:left-ui-4 focus:top-ui-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-bg"
       >
-        Skip to content
+        {messages.accessibility.skipToContent}
       </a>
 
-      <div className="flex min-h-screen" aria-hidden={mobileNavigationOpen ? true : undefined}>
-        <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950 lg:flex">
-          <Brand />
-          <ProductNavigation pathname={pathname} />
+      <div className="flex min-h-screen bg-ui-bg" aria-hidden={mobileNavigationOpen ? true : undefined}>
+        <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-ui-border bg-ui-sidebar lg:flex">
+          <Brand brand={messages.brand} />
+          <ProductNavigation pathname={pathname} messages={messages} />
         </aside>
 
-        <div className="min-w-0 flex-1">
-          <header className="border-b border-zinc-200 bg-white/90 px-4 py-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/90 sm:px-6 lg:px-10">
-            <div className="mx-auto flex w-full max-w-6xl items-center gap-3">
-              <button
-                ref={openButtonRef}
-                type="button"
-                aria-label="Open navigation"
-                aria-controls="mobile-product-navigation"
-                aria-expanded={mobileNavigationOpen}
-                onClick={() => setMobileNavigationOpen(true)}
-                className="inline-flex size-9 items-center justify-center rounded-md border border-zinc-300 text-zinc-700 outline-none hover:bg-zinc-100 focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-offset-2 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-zinc-950 lg:hidden"
-              >
-                <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 fill-none stroke-current stroke-2">
-                  <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
-                </svg>
-              </button>
-              <div>
-                <h1 className="text-base font-semibold tracking-tight">{page.title}</h1>
-                <p className="mt-0.5 text-sm text-zinc-600 dark:text-zinc-400">{page.description}</p>
-              </div>
-            </div>
-          </header>
+        <div className="min-w-0 flex-1 bg-ui-bg">
+          <ProductHeader
+            title={page.title}
+            description={page.description}
+            openNavigationLabel={messages.accessibility.openNavigation}
+            mobileNavigationOpen={mobileNavigationOpen}
+            openButtonRef={openButtonRef}
+            onOpenNavigation={() => setMobileNavigationOpen(true)}
+          />
 
-          <main id="product-content" className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-10 lg:py-10">
+          <main id="product-content" className="mx-auto w-full max-w-[1600px] px-ui-4 py-ui-6 sm:px-ui-6 lg:px-ui-10 lg:py-ui-8">
             {children}
           </main>
         </div>
@@ -288,36 +178,40 @@ export function AppShell({ children }: AppShellProps) {
       {mobileNavigationOpen ? (
         <button
           type="button"
-          aria-label="Close navigation overlay"
+          aria-label={messages.accessibility.closeNavigationOverlay}
           onClick={() => closeMobileNavigation()}
-          className="fixed inset-0 z-40 bg-zinc-950/30 lg:hidden"
+          className="fixed inset-0 z-40 bg-ui-bg/80 backdrop-blur-sm lg:hidden"
         />
       ) : null}
 
       <aside
         ref={drawerRef}
         id="mobile-product-navigation"
-        aria-label="Mobile product navigation"
+        aria-label={messages.navigation.mobileAriaLabel}
         onKeyDown={handleDrawerKeyDown}
-        className={`fixed inset-y-0 left-0 z-50 h-full w-[min(19rem,calc(100vw-3rem))] flex-col border-r border-zinc-200 bg-white shadow-xl dark:border-zinc-800 dark:bg-zinc-950 lg:hidden ${
+        className={`fixed inset-y-0 left-0 z-50 h-full w-[min(19rem,calc(100vw-3rem))] flex-col border-r border-ui-border bg-ui-sidebar shadow-2xl lg:hidden ${
           mobileNavigationOpen ? "flex" : "hidden"
         }`}
       >
-        <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800">
-          <Brand />
+        <div className="flex items-center justify-between">
+          <Brand brand={messages.brand} />
           <button
             ref={closeButtonRef}
             type="button"
-            aria-label="Close navigation"
+            aria-label={messages.accessibility.closeNavigation}
             onClick={() => closeMobileNavigation()}
-            className="mr-3 inline-flex size-9 items-center justify-center rounded-md text-zinc-700 outline-none hover:bg-zinc-100 focus-visible:ring-2 focus-visible:ring-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:focus-visible:ring-zinc-100"
+            className="mr-ui-3 inline-flex size-9 items-center justify-center rounded-ui-control border border-ui-border bg-ui-panel text-ui-text-secondary outline-none hover:bg-ui-surface-muted hover:text-ui-text focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-sidebar"
           >
             <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 fill-none stroke-current stroke-2">
               <path d="M6 6l12 12M18 6 6 18" strokeLinecap="round" />
             </svg>
           </button>
         </div>
-        <ProductNavigation pathname={pathname} onNavigate={navigateFromMobileDrawer} />
+        <ProductNavigation
+          pathname={pathname}
+          messages={messages}
+          onNavigate={navigateFromMobileDrawer}
+        />
       </aside>
     </div>
   );

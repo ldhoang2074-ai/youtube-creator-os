@@ -1,90 +1,101 @@
+import type { ShellMessages } from "@/lib/i18n/messages";
+
 export type NavigationStatus = "available" | "embedded" | "coming-soon";
 export type NavigationMatch = "exact" | "prefix";
+export type NavigationItemKey = keyof ShellMessages["navigation"]["items"];
+export type NavigationSectionKey = keyof ShellMessages["navigation"]["sections"];
 
 export interface NavigationItem {
-  readonly label: string;
+  readonly messageKey: NavigationItemKey;
   readonly href?: string;
   readonly match?: NavigationMatch;
   readonly status: NavigationStatus;
+}
+
+export interface NavigationSection {
+  readonly messageKey: NavigationSectionKey;
+  readonly items: readonly NavigationItem[];
+}
+
+export interface LocalizedNavigationItem extends NavigationItem {
+  readonly label: string;
   readonly title: string;
   readonly description: string;
 }
 
-export interface NavigationSection {
+export interface LocalizedNavigationSection
+  extends Omit<NavigationSection, "items"> {
   readonly label: string;
-  readonly items: readonly NavigationItem[];
+  readonly items: readonly LocalizedNavigationItem[];
 }
 
 export const NAVIGATION_SECTIONS: readonly NavigationSection[] = [
   {
-    label: "Research",
+    messageKey: "research",
     items: [
       {
-        label: "Channel Analyzer",
+        messageKey: "analyzer",
         href: "/analyzer",
         match: "prefix",
         status: "available",
-        title: "Channel Analyzer",
-        description: "Analyze recent channel performance and identify outlier videos.",
       },
       {
-        label: "Channel Compare",
+        messageKey: "compare",
         href: "/compare",
         match: "prefix",
         status: "available",
-        title: "Channel Compare",
-        description: "Compare recent channel performance side by side.",
       },
       {
-        label: "Opportunities",
+        messageKey: "opportunities",
         href: "/opportunities",
         match: "prefix",
         status: "available",
-        title: "Opportunities",
-        description: "Compare high-performing videos across multiple channels.",
       },
       {
-        label: "Research Workspace",
+        messageKey: "workspace",
         href: "/workspace",
         match: "prefix",
         status: "available",
-        title: "Research Workspace",
-        description: "Save and revisit channel research sessions.",
       },
       {
-        label: "Transcript Intelligence",
+        messageKey: "transcript",
         href: "/transcript",
         match: "prefix",
         status: "available",
-        title: "Transcript Intelligence",
-        description: "Fetch and review timestamped YouTube transcripts.",
       },
       {
-        label: "Title Patterns",
+        messageKey: "titlePatterns",
         status: "embedded",
-        title: "Title Patterns",
-        description: "Available in opportunity and saved research results.",
       },
     ],
   },
   {
-    label: "Coming soon",
+    messageKey: "comingSoon",
     items: [
       {
-        label: "Content Gaps",
+        messageKey: "contentGaps",
         status: "coming-soon",
-        title: "Content Gaps",
-        description: "Content gap analysis is planned for a later stage.",
       },
       {
-        label: "Idea Generator",
+        messageKey: "ideaGenerator",
         status: "coming-soon",
-        title: "Idea Generator",
-        description: "Idea generation is planned for a later stage.",
       },
     ],
   },
 ];
+
+export function getLocalizedNavigationSections(
+  messages: ShellMessages,
+): readonly LocalizedNavigationSection[] {
+  return NAVIGATION_SECTIONS.map((section) => ({
+    messageKey: section.messageKey,
+    label: messages.navigation.sections[section.messageKey],
+    items: section.items.map((item) => ({
+      ...item,
+      ...messages.navigation.items[item.messageKey],
+    })),
+  }));
+}
 
 export function getEnabledNavigationItems(): readonly NavigationItem[] {
   return NAVIGATION_SECTIONS.flatMap((section) =>
@@ -108,20 +119,22 @@ export function getActiveNavigationItems(pathname: string): readonly NavigationI
   return getEnabledNavigationItems().filter((item) => isNavigationItemActive(item, pathname));
 }
 
-export function getPageMetadata(pathname: string): Pick<NavigationItem, "title" | "description"> {
+export function getPageMetadata(
+  pathname: string,
+  messages: ShellMessages,
+): Pick<LocalizedNavigationItem, "title" | "description"> {
   const [activeItem] = getActiveNavigationItems(pathname);
 
   if (activeItem !== undefined) {
+    const itemMessages = messages.navigation.items[activeItem.messageKey];
+
     return {
-      title: activeItem.title,
-      description: activeItem.description,
+      title: itemMessages.title,
+      description: itemMessages.description,
     };
   }
 
-  return {
-    title: "YouTube Creator OS",
-    description: "Channel research for creators.",
-  };
+  return messages.fallbackPage;
 }
 
 export function isProductRoute(pathname: string): boolean {

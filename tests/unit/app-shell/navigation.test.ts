@@ -1,13 +1,54 @@
 import { describe, expect, it } from "vitest";
+import { enMessages } from "@/lib/i18n/dictionaries/en";
+import { viMessages } from "@/lib/i18n/dictionaries/vi";
 import {
   getActiveNavigationItems,
   getEnabledNavigationItems,
+  getLocalizedNavigationSections,
   getPageMetadata,
   isProductRoute,
   NAVIGATION_SECTIONS,
 } from "@/components/app-shell/navigation";
 
 describe("product navigation", () => {
+  it("preserves the exact structural section and item order", () => {
+    expect(NAVIGATION_SECTIONS).toEqual([
+      {
+        messageKey: "research",
+        items: [
+          { messageKey: "analyzer", href: "/analyzer", match: "prefix", status: "available" },
+          { messageKey: "compare", href: "/compare", match: "prefix", status: "available" },
+          {
+            messageKey: "opportunities",
+            href: "/opportunities",
+            match: "prefix",
+            status: "available",
+          },
+          {
+            messageKey: "workspace",
+            href: "/workspace",
+            match: "prefix",
+            status: "available",
+          },
+          {
+            messageKey: "transcript",
+            href: "/transcript",
+            match: "prefix",
+            status: "available",
+          },
+          { messageKey: "titlePatterns", status: "embedded" },
+        ],
+      },
+      {
+        messageKey: "comingSoon",
+        items: [
+          { messageKey: "contentGaps", status: "coming-soon" },
+          { messageKey: "ideaGenerator", status: "coming-soon" },
+        ],
+      },
+    ]);
+  });
+
   it("lists every existing product route exactly once, with no Overview item", () => {
     const enabledItems = getEnabledNavigationItems();
     const routes = enabledItems.map((item) => item.href);
@@ -21,36 +62,35 @@ describe("product navigation", () => {
     ]);
     expect(new Set(routes).size).toBe(routes.length);
     expect(enabledItems.every((item) => item.href !== undefined && item.href.length > 0)).toBe(true);
-    expect(enabledItems.some((item) => item.label === "Overview")).toBe(false);
+    expect(enabledItems.map((item) => item.messageKey)).toEqual([
+      "analyzer",
+      "compare",
+      "opportunities",
+      "workspace",
+      "transcript",
+    ]);
   });
 
-  it("renders disabled embedded and coming-soon items without routes", () => {
+  it("keeps disabled embedded and coming-soon items free of routes", () => {
     const disabledItems = NAVIGATION_SECTIONS.flatMap((section) => section.items).filter(
       (item) => item.status !== "available",
     );
 
-    expect(disabledItems.map((item) => item.label)).toEqual([
-      "Title Patterns",
-      "Content Gaps",
-      "Idea Generator",
+    expect(disabledItems.map((item) => item.messageKey)).toEqual([
+      "titlePatterns",
+      "contentGaps",
+      "ideaGenerator",
     ]);
     expect(disabledItems.every((item) => item.href === undefined)).toBe(true);
   });
 
-  it("keeps Coming Soon items free of hrefs", () => {
-    const comingSoonItems = NAVIGATION_SECTIONS.flatMap((section) => section.items).filter(
-      (item) => item.status === "coming-soon",
-    );
+  it("keeps Coming Soon items and Title Patterns structurally unchanged", () => {
+    const disabledItems = NAVIGATION_SECTIONS.flatMap((section) => section.items);
+    const comingSoonItems = disabledItems.filter((item) => item.status === "coming-soon");
+    const titlePatterns = disabledItems.find((item) => item.messageKey === "titlePatterns");
 
-    expect(comingSoonItems).toHaveLength(2);
+    expect(comingSoonItems.map((item) => item.messageKey)).toEqual(["contentGaps", "ideaGenerator"]);
     expect(comingSoonItems.every((item) => item.href === undefined)).toBe(true);
-  });
-
-  it("keeps the embedded Title Patterns item free of an href", () => {
-    const titlePatterns = NAVIGATION_SECTIONS.flatMap((section) => section.items).find(
-      (item) => item.label === "Title Patterns",
-    );
-
     expect(titlePatterns?.status).toBe("embedded");
     expect(titlePatterns?.href).toBeUndefined();
   });
@@ -70,21 +110,22 @@ describe("product navigation", () => {
     expect(getActiveNavigationItems("/")).toEqual([]);
   });
 
-  it("does not activate Opportunities for a pathname that only shares its prefix", () => {
+  it("rejects pathnames that only share a partial route prefix", () => {
     expect(getActiveNavigationItems("/opportunity")).toEqual([]);
+    expect(getActiveNavigationItems("/transcription")).toEqual([]);
   });
 
   it.each([
-    ["/analyzer", "Channel Analyzer"],
-    ["/opportunities", "Opportunities"],
-    ["/workspace", "Research Workspace"],
-    ["/compare", "Channel Compare"],
-    ["/transcript", "Transcript Intelligence"],
-  ])("activates only %s for %s", (pathname, label) => {
+    ["/analyzer", "analyzer"],
+    ["/opportunities", "opportunities"],
+    ["/workspace", "workspace"],
+    ["/compare", "compare"],
+    ["/transcript", "transcript"],
+  ])("activates only the %s structural item", (pathname, messageKey) => {
     const activeItems = getActiveNavigationItems(pathname);
 
     expect(activeItems).toHaveLength(1);
-    expect(activeItems[0]?.label).toBe(label);
+    expect(activeItems[0]?.messageKey).toBe(messageKey);
   });
 
   it("uses prefix matching for future child routes without activating another item", () => {
@@ -92,13 +133,9 @@ describe("product navigation", () => {
     const transcriptItems = getActiveNavigationItems("/transcript/example");
 
     expect(opportunitiesItems).toHaveLength(1);
-    expect(opportunitiesItems[0]?.label).toBe("Opportunities");
+    expect(opportunitiesItems[0]?.messageKey).toBe("opportunities");
     expect(transcriptItems).toHaveLength(1);
-    expect(transcriptItems[0]?.label).toBe("Transcript Intelligence");
-  });
-
-  it("does not activate Transcript Intelligence for a pathname sharing only part of its prefix", () => {
-    expect(getActiveNavigationItems("/transcription")).toEqual([]);
+    expect(transcriptItems[0]?.messageKey).toBe("transcript");
   });
 
   it("never activates more than one navigation item for a given pathname", () => {
@@ -119,37 +156,70 @@ describe("product navigation", () => {
     }
   });
 
-  it("provides shell metadata for active product pages", () => {
-    expect(getPageMetadata("/analyzer")).toEqual({
-      title: "Channel Analyzer",
-      description: "Analyze recent channel performance and identify outlier videos.",
-    });
-    expect(getPageMetadata("/compare")).toEqual({
-      title: "Channel Compare",
-      description: "Compare recent channel performance side by side.",
-    });
-    expect(getPageMetadata("/opportunities")).toEqual({
-      title: "Opportunities",
-      description: "Compare high-performing videos across multiple channels.",
-    });
-    expect(getPageMetadata("/workspace")).toEqual({
-      title: "Research Workspace",
-      description: "Save and revisit channel research sessions.",
-    });
-    expect(getPageMetadata("/transcript")).toEqual({
-      title: "Transcript Intelligence",
-      description: "Fetch and review timestamped YouTube transcripts.",
-    });
-    expect(isProductRoute("/")).toBe(false);
-    expect(isProductRoute("/workspace")).toBe(true);
-    expect(isProductRoute("/transcript")).toBe(true);
+  it("localizes representative English navigation copy", () => {
+    const sections = getLocalizedNavigationSections(enMessages);
+
+    expect(sections[0]?.label).toBe("Research");
+    expect(sections[1]?.label).toBe("Coming soon");
+    expect(sections[0]?.items[0]?.label).toBe("Channel Analyzer");
+    expect(sections[0]?.items[4]?.label).toBe("Transcript Intelligence");
+    expect(enMessages.navigation.statuses.embedded).toBe("Inside research results");
+    expect(enMessages.navigation.statuses.soon).toBe("Soon");
   });
 
-  it("falls back to a default title and description for a pathname with no active item", () => {
-    expect(getPageMetadata("/does-not-exist")).toEqual({
-      title: "YouTube Creator OS",
-      description: "Channel research for creators.",
+  it("localizes representative Vietnamese navigation copy", () => {
+    const sections = getLocalizedNavigationSections(viMessages);
+
+    expect(sections[0]?.label).toBe("Nghiên cứu");
+    expect(sections[1]?.label).toBe("Sắp ra mắt");
+    expect(sections[0]?.items[0]?.label).toBe("Phân tích kênh");
+    expect(sections[0]?.items[4]?.label).toBe("Phân tích lời thoại");
+  });
+
+  it("localizes page metadata for English and Vietnamese", () => {
+    expect(getPageMetadata("/analyzer", enMessages)).toEqual({
+      title: enMessages.navigation.items.analyzer.title,
+      description: enMessages.navigation.items.analyzer.description,
     });
-    expect(getActiveNavigationItems("/does-not-exist")).toEqual([]);
+    expect(getPageMetadata("/transcript", enMessages)).toEqual({
+      title: enMessages.navigation.items.transcript.title,
+      description: enMessages.navigation.items.transcript.description,
+    });
+    expect(getPageMetadata("/analyzer", viMessages)).toEqual({
+      title: viMessages.navigation.items.analyzer.title,
+      description: viMessages.navigation.items.analyzer.description,
+    });
+    expect(getPageMetadata("/transcript", viMessages)).toEqual({
+      title: viMessages.navigation.items.transcript.title,
+      description: viMessages.navigation.items.transcript.description,
+    });
+  });
+
+  it("localizes fallback metadata for unknown paths", () => {
+    expect(getPageMetadata("/does-not-exist", enMessages)).toEqual(enMessages.fallbackPage);
+    expect(getPageMetadata("/does-not-exist", viMessages)).toEqual(viMessages.fallbackPage);
+  });
+
+  it("keeps route activity independent from presentation language", () => {
+    const [activeItem] = getActiveNavigationItems("/transcript");
+    const englishTranscript = getLocalizedNavigationSections(enMessages)[0]?.items[4];
+    const vietnameseTranscript = getLocalizedNavigationSections(viMessages)[0]?.items[4];
+
+    expect(activeItem?.messageKey).toBe("transcript");
+    expect(englishTranscript?.messageKey).toBe(activeItem?.messageKey);
+    expect(vietnameseTranscript?.messageKey).toBe(activeItem?.messageKey);
+  });
+
+  it("does not mutate navigation structure or dictionaries while localizing", () => {
+    const navigationBefore = JSON.parse(JSON.stringify(NAVIGATION_SECTIONS));
+    const englishBefore = JSON.parse(JSON.stringify(enMessages));
+    const vietnameseBefore = JSON.parse(JSON.stringify(viMessages));
+
+    getLocalizedNavigationSections(enMessages);
+    getLocalizedNavigationSections(viMessages);
+
+    expect(NAVIGATION_SECTIONS).toEqual(navigationBefore);
+    expect(enMessages).toEqual(englishBefore);
+    expect(viMessages).toEqual(vietnameseBefore);
   });
 });

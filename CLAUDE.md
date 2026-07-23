@@ -70,16 +70,24 @@ navigation metadata, and no feature business-logic changes) and its
 mobile-navigation hotfix are merged. The UI2 readiness audit is merged. The
 UI2 Stage 0 foundations, UI2 Stage 1 Analyzer video grid, UI2 Stage 2
 Workspace video grid, and UI2 Stage 3 Opportunities channel grid are merged.
-UI-1A shell-only internationalization contracts are complete and merged. English and
-Vietnamese contracts exist, Spanish is reserved for a later stage, and the
-dictionaries are not connected to AppShell or product pages. No locale cookies,
-language switching, route groups, or translated pages are implemented.
+UI-1A shell-only internationalization contracts and UI-1B semantic design
+tokens are complete and merged. English and Vietnamese contracts exist, Spanish
+is reserved for a later stage, and the dictionaries are not connected to product
+pages. UI-1B defines color, spacing, radius, and typography tokens with Tailwind
+theme aliases for future work only; no token is consumed by the shell yet.
 
-The current implementation stage is UI redesign foundation — UI-1B semantic
-design tokens. UI-1B defines a dark-first semantic CSS token contract covering
-color, spacing, radius, and typography, with Tailwind theme aliases for future
-work only. The tokens are not consumed by
-AppShell, pages, components, or existing UI, so the current visual output and
-light/dark behavior remain unchanged. No theme switcher, theme persistence, or
-locale runtime integration exists. The AppShell redesign begins in UI-2. No
-authentication is included.
+UI-2A localized and decomposed AppShell: the root Server Component passes
+default English shell messages to AppShell, navigation structure no longer stores
+user-facing English copy, and Brand, ProductHeader, and ProductNavigation are
+separated from AppShell. Drawer ownership and focus behavior remain in AppShell.
+
+The current implementation stage is UI-2B — visible dark AppShell redesign.
+UI-2B applies the semantic tokens to the product shell: the desktop sidebar,
+mobile drawer, brand, header, navigation, and content frame now use the dark
+visual system. The visible redesign is limited to AppShell; product pages are
+not redesigned yet, and the landing page remains unchanged. Navigation icons are
+local inline SVGs, with no external icon dependency added. Existing drawer and
+accessibility behavior remains. No authentication, login UI, user, account,
+credits, or notification controls exist. No runtime locale switching, locale
+cookie, locale persistence, route group, or route change exists. The next UI
+stage redesigns core product pages.
