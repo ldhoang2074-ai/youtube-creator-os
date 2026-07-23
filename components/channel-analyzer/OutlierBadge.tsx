@@ -8,16 +8,16 @@ const LABELS: Record<OutlierLevel, string> = {
 };
 
 const STYLES: Record<OutlierLevel, string> = {
-  "insufficient-data": "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400",
-  normal: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-  outlier: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
-  "strong-outlier": "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300",
+  "insufficient-data": "border-ui-border bg-ui-surface-muted text-ui-text-muted",
+  normal: "border-ui-border bg-ui-panel-elevated text-ui-text-secondary",
+  outlier: "border-ui-warning/40 bg-ui-warning/10 text-ui-warning",
+  "strong-outlier": "border-ui-danger/50 bg-ui-danger/10 font-semibold text-ui-danger",
 };
 
 export function OutlierBadge({ level }: { level: OutlierLevel }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STYLES[level]}`}
+      className={`inline-flex items-center rounded-ui-pill border px-ui-2 py-ui-1 text-ui-label font-medium ${STYLES[level]}`}
     >
       {LABELS[level]}
     </span>
