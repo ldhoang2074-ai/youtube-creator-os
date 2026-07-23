@@ -95,8 +95,15 @@ stage redesigns core product pages.
 UI-3A redesigned the Analyzer page frame, input and result states, and channel
 summary using the existing semantic dark tokens.
 
-The current implementation stage is UI-3B — Analyzer results visual redesign.
-UI-3B redesigns the Analyzer video results, outlier badges, video-detail content,
-and the shared DetailDialog visual shell using existing semantic tokens while
-preserving all data, interaction, accessibility, and dialog-focus behavior. It
-is implemented on this branch and remains limited to the reviewed UI-3B scope.
+UI-3B redesigned the Analyzer video results, outlier badges, video-detail
+content, and the shared DetailDialog visual shell using existing semantic
+tokens while preserving all data, interaction, accessibility, and
+dialog-focus behavior.
+
+The current implementation stage is UI-3C — Compare page visual redesign.
+UI-3C redesigns the `/compare` page frame, form, and loading and error states,
+and replaces the fixed-width horizontal comparison table with responsive
+channel cards using the existing shared `Grid` component and semantic dark UI
+tokens. It preserves the existing `POST /api/compare` request, validation,
+result ordering, data contract, accessibility roles, and business behavior,
+and remains limited to the reviewed UI-3C scope.

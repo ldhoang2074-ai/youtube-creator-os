@@ -2,7 +2,7 @@ import { ChannelCompareClient } from "@/components/channel-compare/ChannelCompar
 
 export default function ComparePage() {
   return (
-    <div className="flex w-full max-w-5xl flex-col gap-6">
+    <div className="flex w-full max-w-[1600px] flex-col gap-ui-6">
       <ChannelCompareClient />
     </div>
   );

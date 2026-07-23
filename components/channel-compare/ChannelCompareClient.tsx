@@ -69,11 +69,19 @@ export function ChannelCompareClient() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <label htmlFor="compare-inputs" className="sr-only">
-          Channel URLs or handles, one per line
-        </label>
+    <div className="flex min-w-0 flex-col gap-ui-6">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-ui-3 rounded-ui-panel border border-ui-border bg-ui-panel p-ui-4 sm:p-ui-6"
+      >
+        <div>
+          <label htmlFor="compare-inputs" className="text-ui-body-sm font-medium text-ui-text">
+            Channel URLs or handles, one per line
+          </label>
+          <p className="mt-ui-1 text-ui-body-sm text-ui-text-muted">
+            Enter 2 to 5 channel URLs or handles, one per line.
+          </p>
+        </div>
         <textarea
           id="compare-inputs"
           value={rawInput}
@@ -81,21 +89,34 @@ export function ChannelCompareClient() {
           placeholder={"One channel per line, e.g.\n@channel1\n@channel2"}
           rows={5}
           disabled={status === "loading"}
-          className="rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-500 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900"
+          className="min-w-0 rounded-ui-control border border-ui-border bg-ui-surface-muted px-ui-3 py-ui-2 text-ui-body text-ui-text outline-none placeholder:text-ui-text-muted focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-panel disabled:cursor-not-allowed disabled:opacity-50"
         />
         <button
           type="submit"
           disabled={status === "loading"}
-          className="self-start rounded-md bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors hover:bg-[#383838] disabled:opacity-50 dark:hover:bg-[#ccc]"
+          className="self-start rounded-ui-control bg-ui-accent px-ui-4 py-ui-2 text-ui-body-sm font-semibold text-ui-text transition-colors hover:bg-ui-accent-hover focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-panel disabled:cursor-not-allowed disabled:opacity-50"
         >
           {status === "loading" ? "Comparing..." : "Compare channels"}
         </button>
       </form>
 
+      {status === "loading" ? (
+        <div
+          role="status"
+          className="flex items-center gap-ui-3 rounded-ui-panel border border-ui-border bg-ui-panel p-ui-4 text-ui-body-sm text-ui-text-secondary sm:p-ui-6"
+        >
+          <span
+            aria-hidden="true"
+            className="size-5 shrink-0 animate-spin rounded-ui-pill border-2 border-ui-border border-t-ui-accent"
+          />
+          <span>Comparing channels...</span>
+        </div>
+      ) : null}
+
       {status === "error" && errorMessage ? (
         <p
           role="alert"
-          className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-300"
+          className="rounded-ui-panel border border-ui-danger/40 bg-ui-danger/10 px-ui-4 py-ui-3 text-ui-body-sm text-ui-danger"
         >
           {errorMessage}
         </p>
