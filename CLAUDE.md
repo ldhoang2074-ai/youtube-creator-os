@@ -124,26 +124,49 @@ experience keeps working regardless of storage availability. UX-1 does not
 submit forms, call any API, or persist analysis/transcript results — only
 the raw input text. UX-1 is complete and merged.
 
-The current implementation stage is UI-3D — Opportunity Feed visual
-redesign. UI-3D applies the existing dark semantic design system to the
-`/opportunities` page frame, input form, loading/error/empty states,
-`ChannelCard`, and the Opportunity Feed results (renamed visually from a
-fixed-width horizontal `<table>` to a responsive `Grid` of cards, still
-exported as `OpportunityFeedTable` to avoid breaking its contract), plus
-`ChannelDetailDialog` (touched beyond the originally listed files because it
-is the only remaining zinc-styled screen reachable from this page — it is
-`ChannelCard`'s own detail view and is used nowhere outside Opportunity
-Feed). The 2× threshold explanation on the page frame was reworded for
-clarity and to state explicitly that it is a snapshot of the analyzed set,
-not a measure of change over time, without altering its meaning. UI-3D
-preserves the existing `POST /api/opportunities` request, 2-5 channel
-validation, runtime response validation, `successfulInputs` closure
-behavior, item ordering, `showThumbnails`/`onViewDetails` props, outlier
-labels and multiplier formatting, the UX-1 persistent draft wiring
+UI-3D — Opportunity Feed visual redesign — applies the existing dark
+semantic design system to the `/opportunities` page frame, input form,
+loading/error/empty states, `ChannelCard`, and the Opportunity Feed results
+(renamed visually from a fixed-width horizontal `<table>` to a responsive
+`Grid` of cards, still exported as `OpportunityFeedTable` to avoid breaking
+its contract), plus `ChannelDetailDialog` (touched beyond the originally
+listed files because it is the only remaining zinc-styled screen reachable
+from this page — it is `ChannelCard`'s own detail view and is used nowhere
+outside Opportunity Feed). The 2× threshold explanation on the page frame
+was reworded for clarity and to state explicitly that it is a snapshot of
+the analyzed set, not a measure of change over time, without altering its
+meaning. UI-3D preserves the existing `POST /api/opportunities` request,
+2-5 channel validation, runtime response validation, `successfulInputs`
+closure behavior, item ordering, `showThumbnails`/`onViewDetails` props,
+outlier labels and multiplier formatting, the UX-1 persistent draft wiring
 (including `initialInputs` priority), `SaveResearchButton`,
 `TitlePatternPanel`, both detail dialogs, Workspace behavior, and all
 accessibility roles and dialog-focus behavior. It does not add sorting,
 filtering, search, or pagination, and does not change the outlier algorithm,
-the 2× threshold, or any type/domain model. It is implemented on this
-branch and remains limited to the reviewed UI-3D scope; it has not been
-merged.
+the 2× threshold, or any type/domain model. UI-3D is complete and merged.
+
+The current implementation stage is UI-3E — Workspace visual redesign.
+UI-3E applies the existing dark semantic design system to the `/workspace`
+page frame (`max-w-[1600px]`, matching the other redesigned product pages),
+the "saved on this device only" explanation panel, the loading/
+storage-unavailable/skipped/empty states, each saved-session card, the
+two-step delete confirmation, the expanded snapshot content wrappers, and
+`WorkspaceVideoCard`'s own "View details" action. Saved-session cards gained
+`aria-expanded`/`aria-controls` on the session-name toggle and a semantic
+border/surface treatment while expanded; these are additive accessibility
+attributes and a visual state only, not new behavior. UI-3E preserves
+`useSyncExternalStore`, its stable `SERVER_SNAPSHOT` and
+`STORAGE_UNAVAILABLE_SNAPSHOT` references, `WORKSPACE_STORAGE_KEY`, the
+cross-tab `storage` event subscription, the same-tab `refreshSnapshot`
+pattern, `handleSelect`/`handleRequestDelete`/`handleConfirmDelete`/
+`handleCancelDelete` and their exact storage/error-mapping behavior,
+selected-session and selected-video state, `sessions.map(...)` and saved
+item ordering (no sorting, filtering, grouping, search, or pagination),
+`buildOpportunitiesHref`'s repeated `channel` query parameters,
+`prefetch={false}` on the Opportunity Feed link, `analyzeTitlePatterns`,
+`TitlePatternPanel`, `VideoDetailDialog`, and all current
+data/domain types and storage functions in `lib/workspace/*`. It does not
+restyle `VideoCardBase`, `TitlePatternPanel`, or `VideoDetailDialog`
+themselves, and does not add a database, authentication, cloud sync, API
+calls, autosave, or new dependencies. It is implemented on this branch and
+remains limited to the reviewed UI-3E scope; it has not been merged.

@@ -170,15 +170,25 @@ export function WorkspaceClient() {
 
   if (isInitialServerSnapshot) {
     return (
-      <p role="status" className="text-sm text-zinc-500 dark:text-zinc-400">
-        Loading saved research...
-      </p>
+      <div
+        role="status"
+        className="flex items-center gap-ui-3 rounded-ui-panel border border-ui-border bg-ui-panel p-ui-4 text-ui-body-sm text-ui-text-secondary sm:p-ui-6"
+      >
+        <span
+          aria-hidden="true"
+          className="size-5 shrink-0 animate-spin rounded-ui-pill border-2 border-ui-border border-t-ui-accent"
+        />
+        <span>Loading saved research...</span>
+      </div>
     );
   }
 
   if (!snapshot.ok) {
     return (
-      <p role="alert" className="text-sm text-red-700 dark:text-red-300">
+      <p
+        role="alert"
+        className="rounded-ui-panel border border-ui-danger/40 bg-ui-danger/10 px-ui-4 py-ui-3 text-ui-body-sm text-ui-danger"
+      >
         Saving is not available in this browser session.
       </p>
     );
@@ -188,13 +198,16 @@ export function WorkspaceClient() {
 
   if (sessions.length === 0) {
     return (
-      <div className="flex flex-col gap-3">
+      <div className="flex min-w-0 flex-col gap-ui-3">
         {skippedCount > 0 ? (
-          <p role="status" className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p
+            role="status"
+            className="rounded-ui-panel border border-ui-border bg-ui-panel px-ui-4 py-ui-3 text-ui-body-sm text-ui-text-secondary"
+          >
             Some saved research could not be loaded and was skipped.
           </p>
         ) : null}
-        <div className="rounded-md border border-dashed border-zinc-300 px-4 py-8 text-center text-sm text-zinc-500 dark:border-zinc-700">
+        <div className="rounded-ui-panel border border-dashed border-ui-border bg-ui-panel px-ui-4 py-ui-8 text-center text-ui-body-sm text-ui-text-muted">
           Nothing saved yet. Save a result from the Opportunity Feed to see it here.
         </div>
       </div>
@@ -202,131 +215,151 @@ export function WorkspaceClient() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex min-w-0 flex-col gap-ui-4">
       {skippedCount > 0 ? (
-        <p role="status" className="text-sm text-zinc-500 dark:text-zinc-400">
+        <p
+          role="status"
+          className="rounded-ui-panel border border-ui-border bg-ui-panel px-ui-4 py-ui-3 text-ui-body-sm text-ui-text-secondary"
+        >
           Some saved research could not be loaded and was skipped.
         </p>
       ) : null}
 
-      <ul className="flex flex-col gap-4">
-        {sessions.map((session) => (
-          <li
-            key={session.id}
-            className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800"
-          >
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <button
-                  type="button"
-                  onClick={() => handleSelect(session.id)}
-                  className="text-left text-base font-semibold text-zinc-950 hover:underline dark:text-zinc-50"
-                >
-                  {session.name}
-                </button>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                  Saved {new Date(session.savedAt).toLocaleString()} ·{" "}
-                  {session.inputs.length} channels · {session.result.items.length} videos
-                  {session.result.failures.length > 0
-                    ? ` · ${session.result.failures.length} failed`
-                    : ""}
-                </p>
-              </div>
+      <ul className="flex min-w-0 flex-col gap-ui-4">
+        {sessions.map((session) => {
+          const isExpanded = selectedId === session.id;
+          const contentId = `workspace-session-${session.id}`;
 
-              <div className="flex flex-wrap items-center gap-2">
-                <Link
-                  href={buildOpportunitiesHref(session.inputs)}
-                  prefetch={false}
-                  className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm dark:border-zinc-700"
-                >
-                  Open these channels in Opportunity Feed
-                </Link>
-
-                {pendingDeleteId === session.id ? (
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-red-700 dark:text-red-300">
-                      Delete this saved research?
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => handleConfirmDelete(session.id)}
-                      className="rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white"
-                    >
-                      Confirm delete
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleCancelDelete}
-                      className="text-sm text-zinc-700 underline underline-offset-2 dark:text-zinc-300"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                ) : (
+          return (
+            <li
+              key={session.id}
+              className={`min-w-0 rounded-ui-panel border p-ui-4 sm:p-ui-6 ${
+                isExpanded ? "border-ui-focus/60 bg-ui-panel-elevated" : "border-ui-border bg-ui-panel"
+              }`}
+            >
+              <div className="flex min-w-0 flex-col gap-ui-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
+                <div className="min-w-0">
                   <button
                     type="button"
-                    onClick={() => handleRequestDelete(session.id)}
-                    className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm text-red-700 dark:border-zinc-700 dark:text-red-300"
+                    onClick={() => handleSelect(session.id)}
+                    aria-expanded={isExpanded}
+                    aria-controls={contentId}
+                    className="min-w-0 break-words text-left text-ui-body font-semibold text-ui-text outline-none transition-colors hover:text-ui-text-secondary focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-panel"
                   >
-                    Delete
+                    {session.name}
                   </button>
-                )}
+                  <p className="mt-ui-1 break-words text-ui-body-sm text-ui-text-muted">
+                    Saved {new Date(session.savedAt).toLocaleString()} ·{" "}
+                    {session.inputs.length} channels · {session.result.items.length} videos
+                    {session.result.failures.length > 0
+                      ? ` · ${session.result.failures.length} failed`
+                      : ""}
+                  </p>
+                </div>
+
+                <div className="flex min-w-0 flex-col items-stretch gap-ui-2 sm:flex-row sm:flex-wrap sm:items-center">
+                  <Link
+                    href={buildOpportunitiesHref(session.inputs)}
+                    prefetch={false}
+                    className="min-w-0 break-words rounded-ui-control border border-ui-border px-ui-3 py-ui-2 text-center text-ui-body-sm text-ui-text-secondary outline-none transition-colors hover:bg-ui-surface-muted hover:text-ui-text focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-panel"
+                  >
+                    Open these channels in Opportunity Feed
+                  </Link>
+
+                  {pendingDeleteId === session.id ? (
+                    <div className="flex flex-col gap-ui-2 rounded-ui-control border border-ui-danger/40 bg-ui-danger/10 p-ui-3 sm:flex-row sm:items-center">
+                      <span className="text-ui-body-sm text-ui-danger">
+                        Delete this saved research?
+                      </span>
+                      <div className="flex gap-ui-2">
+                        <button
+                          type="button"
+                          onClick={() => handleConfirmDelete(session.id)}
+                          className="rounded-ui-control bg-ui-danger px-ui-3 py-ui-2 text-ui-body-sm font-semibold text-ui-text outline-none transition-colors hover:bg-ui-danger/90 focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-panel"
+                        >
+                          Confirm delete
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleCancelDelete}
+                          className="rounded-ui-control border border-ui-border px-ui-3 py-ui-2 text-ui-body-sm text-ui-text-secondary outline-none transition-colors hover:bg-ui-surface-muted hover:text-ui-text focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-panel"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handleRequestDelete(session.id)}
+                      className="rounded-ui-control border border-ui-danger/40 px-ui-3 py-ui-2 text-ui-body-sm font-semibold text-ui-danger outline-none transition-colors hover:bg-ui-danger/10 focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-panel"
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {deleteError && deleteError.sessionId === session.id ? (
-              <p role="alert" className="mt-2 text-sm text-red-700 dark:text-red-300">
-                {deleteError.message}
-              </p>
-            ) : null}
-
-            {selectedId === session.id ? (
-              <div className="mt-4 flex flex-col gap-3">
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Saved on {new Date(session.savedAt).toLocaleString()}. This is a
-                  manually saved snapshot, not live data or growth tracking.
+              {deleteError && deleteError.sessionId === session.id ? (
+                <p
+                  role="alert"
+                  className="mt-ui-3 rounded-ui-control border border-ui-danger/40 bg-ui-danger/10 px-ui-3 py-ui-2 text-ui-body-sm text-ui-danger"
+                >
+                  {deleteError.message}
                 </p>
+              ) : null}
 
-                {session.result.items.length > 0 ? (
-                  <Grid>
-                    {session.result.items.map((item) => (
-                      <WorkspaceVideoCard
-                        key={item.videoId}
-                        item={item}
-                        onViewDetails={() =>
-                          setSelectedVideo({ sessionId: session.id, videoId: item.videoId })
-                        }
-                      />
-                    ))}
-                  </Grid>
-                ) : (
-                  <div className="rounded-md border border-dashed border-zinc-300 px-4 py-6 text-center text-sm text-zinc-500 dark:border-zinc-700">
-                    No recent analyzed videos reached the 2× outlier threshold.
-                  </div>
-                )}
+              {isExpanded ? (
+                <div
+                  id={contentId}
+                  className="mt-ui-4 flex min-w-0 flex-col gap-ui-3 border-t border-ui-border pt-ui-4"
+                >
+                  <p className="text-ui-body-sm text-ui-text-muted">
+                    Saved on {new Date(session.savedAt).toLocaleString()}. This is a
+                    manually saved snapshot, not live data or growth tracking.
+                  </p>
 
-                {session.result.items.length > 0 ? (
-                  <TitlePatternPanel report={analyzeTitlePatterns(session.result.items)} />
-                ) : null}
+                  {session.result.items.length > 0 ? (
+                    <Grid className="gap-ui-4 lg:gap-ui-6">
+                      {session.result.items.map((item) => (
+                        <WorkspaceVideoCard
+                          key={item.videoId}
+                          item={item}
+                          onViewDetails={() =>
+                            setSelectedVideo({ sessionId: session.id, videoId: item.videoId })
+                          }
+                        />
+                      ))}
+                    </Grid>
+                  ) : (
+                    <div className="rounded-ui-panel border border-dashed border-ui-border bg-ui-panel px-ui-4 py-ui-6 text-center text-ui-body-sm text-ui-text-muted">
+                      No recent analyzed videos reached the 2× outlier threshold.
+                    </div>
+                  )}
 
-                {session.result.failures.length > 0 ? (
-                  <ul className="flex flex-col gap-2">
-                    {session.result.failures.map((failure, index) => (
-                      <li
-                        key={`${failure.input}-${index}`}
-                        role="alert"
-                        className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-300"
-                      >
-                        <span className="font-medium">{failure.input}</span>:{" "}
-                        {failure.error.message}
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-              </div>
-            ) : null}
-          </li>
-        ))}
+                  {session.result.items.length > 0 ? (
+                    <TitlePatternPanel report={analyzeTitlePatterns(session.result.items)} />
+                  ) : null}
+
+                  {session.result.failures.length > 0 ? (
+                    <ul className="flex min-w-0 flex-col gap-ui-2">
+                      {session.result.failures.map((failure, index) => (
+                        <li
+                          key={`${failure.input}-${index}`}
+                          role="alert"
+                          className="min-w-0 break-words rounded-ui-panel border border-ui-danger/40 bg-ui-danger/10 px-ui-4 py-ui-3 text-ui-body-sm text-ui-danger"
+                        >
+                          <span className="font-semibold">{failure.input}</span>:{" "}
+                          {failure.error.message}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
+              ) : null}
+            </li>
+          );
+        })}
       </ul>
       <VideoDetailDialog
         source={resolvedSelectedVideo ? { kind: "feed", item: resolvedSelectedVideo } : null}
