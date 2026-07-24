@@ -22,31 +22,33 @@ function PatternCard({ pattern, analyzedItemCount, analyzedChannelCount }: {
   readonly analyzedChannelCount: number;
 }) {
   return (
-    <li className="rounded-md border border-zinc-200 p-3 dark:border-zinc-800">
-      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-        <span className="text-xs font-medium uppercase text-zinc-500 dark:text-zinc-400">
+    <li className="min-w-0 rounded-ui-panel border border-ui-border bg-ui-panel p-ui-4">
+      <div className="flex min-w-0 flex-wrap items-baseline gap-x-ui-2 gap-y-ui-1">
+        <span className="inline-flex items-center rounded-ui-pill border border-ui-border bg-ui-surface-muted px-ui-2 py-ui-1 text-ui-label font-semibold uppercase tracking-[0.08em] text-ui-text-muted">
           {KIND_LABELS[pattern.kind]}
         </span>
-        <span className="font-medium text-zinc-950 dark:text-zinc-50">{pattern.value}</span>
+        <span className="min-w-0 break-words text-ui-body font-semibold text-ui-text">
+          {pattern.value}
+        </span>
       </div>
-      <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+      <p className="mt-ui-2 text-ui-body-sm text-ui-text-muted">
         Found in {pattern.occurrenceCount} of {analyzedItemCount} analyzed videos. Seen in{" "}
         {pattern.channelSpread} of {analyzedChannelCount} channels represented in this analyzed
         set.
       </p>
-      <ul className="mt-2 flex flex-col gap-1">
+      <ul className="mt-ui-3 flex min-w-0 flex-col gap-ui-1">
         {pattern.evidence.map((evidence) => (
-          <li key={evidence.videoId}>
+          <li key={evidence.videoId} className="min-w-0">
             <a
               href={buildYoutubeWatchUrl(evidence.videoId)}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Open ${evidence.title} on YouTube`}
-              className="line-clamp-2 text-sm text-zinc-700 underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-500 dark:text-zinc-300"
+              className="line-clamp-2 min-w-0 break-words rounded-sm text-ui-body-sm text-ui-text-secondary underline-offset-2 outline-none transition-colors hover:text-ui-text hover:underline focus-visible:ring-2 focus-visible:ring-ui-focus"
             >
               {evidence.title}
             </a>
-            <span className="text-xs text-zinc-500 dark:text-zinc-400"> — {evidence.channelTitle}</span>
+            <span className="text-ui-body-sm text-ui-text-muted"> — {evidence.channelTitle}</span>
           </li>
         ))}
       </ul>
@@ -57,8 +59,8 @@ function PatternCard({ pattern, analyzedItemCount, analyzedChannelCount }: {
 export function TitlePatternPanel({ report }: TitlePatternPanelProps) {
   if (report.patterns.length === 0) {
     return (
-      <section aria-label="Repeated title patterns" className="flex flex-col gap-2">
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+      <section aria-label="Repeated title patterns" className="flex min-w-0 flex-col gap-ui-2">
+        <p className="rounded-ui-panel border border-dashed border-ui-border bg-ui-panel px-ui-4 py-ui-6 text-center text-ui-body-sm text-ui-text-muted">
           Not enough repeated title patterns were found across this set.
         </p>
       </section>
@@ -68,15 +70,15 @@ export function TitlePatternPanel({ report }: TitlePatternPanelProps) {
   const displayedPatterns = report.patterns.slice(0, MAX_DISPLAYED_PATTERNS);
 
   return (
-    <section aria-label="Repeated title patterns" className="flex flex-col gap-3">
-      <h2 className="text-base font-semibold text-zinc-950 dark:text-zinc-50">
+    <section aria-label="Repeated title patterns" className="flex min-w-0 flex-col gap-ui-3">
+      <h2 className="text-ui-section font-semibold text-ui-text">
         Repeated title patterns
       </h2>
-      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+      <p className="text-ui-body-sm text-ui-text-muted">
         These patterns repeat in this analyzed set. They do not prove why a video performed well
         and are not predictions or recommendations.
       </p>
-      <ul className="flex flex-col gap-2">
+      <ul className="flex min-w-0 flex-col gap-ui-3">
         {displayedPatterns.map((pattern) => (
           <PatternCard
             key={`${pattern.kind}-${pattern.value}`}

@@ -200,23 +200,22 @@ autosave beyond the existing draft hook, sorting, filtering, search,
 pagination, transcript editing, or transcript summarization. UI-3F is
 complete and merged.
 
-The current implementation stage is UI-3G — Global surfaces visual
-redesign. UI-3G applies the existing dark semantic design system to the
-three remaining global application surfaces: the home/entry screen
-(`app/page.tsx`), the route-level loading fallback (`app/loading.tsx`), and
-the route-level error boundary (`app/error.tsx`). The home screen now uses
-`bg-ui-bg`, `text-ui-text`/`text-ui-text-secondary`, and a `bg-ui-accent`
-pill CTA with `focus-visible:ring-ui-focus`, in place of `zinc-*`, `dark:*`,
-`bg-foreground`/`text-background`, and the hardcoded `#383838`/`#ccc` hover
-colors. The loading fallback keeps its plain semantic text but gains an
-optional CSS-only spinner (`animate-spin`, no dependency, no client-side
-state). The error boundary is now a `rounded-ui-panel` danger surface
-(`border-ui-danger/40 bg-ui-danger/10`) with a `bg-ui-accent` primary retry
-button. UI-3G preserves, verbatim: on the home page, the "YouTube Creator
-OS" heading, the existing description text, the "Get Started" CTA text, and
-`href="/analyzer"`; on the loading fallback, `role="status"`,
-`aria-live="polite"`, and the exact "Loading page..." text; on the error
-boundary, `"use client"`, the `ErrorPageProps` contract
+UI-3G — Global surfaces visual redesign — applies the existing dark
+semantic design system to the three remaining global application surfaces:
+the home/entry screen (`app/page.tsx`), the route-level loading fallback
+(`app/loading.tsx`), and the route-level error boundary (`app/error.tsx`).
+The home screen now uses `bg-ui-bg`, `text-ui-text`/`text-ui-text-secondary`,
+and a `bg-ui-accent` pill CTA with `focus-visible:ring-ui-focus`, in place
+of `zinc-*`, `dark:*`, `bg-foreground`/`text-background`, and the hardcoded
+`#383838`/`#ccc` hover colors. The loading fallback keeps its plain semantic
+text but gains an optional CSS-only spinner (`animate-spin`, no dependency,
+no client-side state). The error boundary is now a `rounded-ui-panel`
+danger surface (`border-ui-danger/40 bg-ui-danger/10`) with a `bg-ui-accent`
+primary retry button. UI-3G preserves, verbatim: on the home page, the
+"YouTube Creator OS" heading, the existing description text, the "Get
+Started" CTA text, and `href="/analyzer"`; on the loading fallback,
+`role="status"`, `aria-live="polite"`, and the exact "Loading page..." text;
+on the error boundary, `"use client"`, the `ErrorPageProps` contract
 (`error: Error & { digest?: string }`, `unstable_retry: () => void`), the
 `unstable_retry` callback (not renamed), `type="button"`,
 `onClick={unstable_retry}`, and the exact "Something went wrong" / "We
@@ -224,6 +223,51 @@ could not load this page. Please try again." / "Try again" copy. UI-3G does
 not add API calls, client state, timers, effects, new dependencies, new
 navigation, logging/telemetry, or any new product behavior on any of the
 three surfaces, and does not modify `TitlePatternPanel`, `SaveResearchButton`,
-shared design tokens, API routes, domain logic, or storage logic. It is
-implemented on this branch and remains limited to the reviewed UI-3G scope;
-it has not been merged.
+shared design tokens, API routes, domain logic, or storage logic. UI-3G is
+complete and merged.
+
+The current implementation stage is UI-3H — Remaining components visual
+redesign. UI-3H applies the existing dark semantic design system to the
+last two components still on the legacy palette: `TitlePatternPanel` and
+`SaveResearchButton`. In `TitlePatternPanel`, each pattern is now a
+`rounded-ui-panel border-ui-border bg-ui-panel` card, the pattern kind is a
+`rounded-ui-pill` semantic badge, the pattern value has stronger
+(`text-ui-body font-semibold text-ui-text`) hierarchy, occurrence/
+channel-spread metadata stays secondary (`text-ui-text-muted`), evidence
+links use `text-ui-text-secondary` with a `hover:text-ui-text` /
+`focus-visible:ring-ui-focus` treatment, and the empty state is a dashed
+semantic panel with unchanged copy. UI-3H preserves, verbatim,
+`MAX_DISPLAYED_PATTERNS = 15`, `KIND_LABELS` and every label value,
+`TitlePatternPanelProps`, `PatternCard`'s props, the
+`report.patterns.length === 0` branch,
+`report.patterns.slice(0, MAX_DISPLAYED_PATTERNS)`, pattern and evidence
+ordering, every React key, `buildYoutubeWatchUrl(evidence.videoId)`,
+`target="_blank"`, `rel="noopener noreferrer"`, the evidence `aria-label`,
+the section `aria-label="Repeated title patterns"`, and all visible copy;
+it adds no client directive, hooks, state, API calls, filtering, sorting,
+pagination, or new interaction. In `SaveResearchButton`, the idle button is
+now a semantic outlined action, the editing state is a `bg-ui-panel`
+bordered panel with a `bg-ui-accent` primary Save action and a wrapping
+(`flex-wrap`) action row, the saving state gained an optional CSS-only
+spinner, the saved state's Workspace link uses `text-ui-accent`, and the
+error state is a `border-ui-danger/40 bg-ui-danger/10` danger panel. UI-3H
+preserves, verbatim, `"use client"`, the `ButtonState` union
+(`"idle" | "editing" | "saving" | "saved" | "error"`), all three
+`useState` declarations and initial values, `SaveResearchButtonProps`,
+`describeSaveError` and every returned message, `handleStartEditing`/
+`handleCancel`/`handleSave` and every `setState`/`setName`/`setErrorMessage`
+transition inside them,
+`getStorageSafely(typeof window === "undefined" ? undefined : window)`,
+`saveSession(storage, { name, inputs, result })`, all storage-failure and
+success behavior, every `type="button"`, the `htmlFor`/`id` pairing, the
+input's `type`, controlled `value`, `onChange`, and `maxLength={80}`,
+`role="status"`/`role="alert"`, `href="/workspace"`, and all visible text;
+it adds no disabled behavior, validation changes, trimming, autosave,
+timers, effects, API calls, telemetry, or additional state. Neither
+component contains `zinc-`, `dark:`, `bg-foreground`, `text-background`,
+`text-foreground`, `bg-background`, hardcoded hex colors, or legacy red
+utility classes; `SaveResearchButton`'s danger state uses the existing
+`text-ui-danger`/`bg-ui-danger` tokens instead. UI-3H does not modify
+`OpportunityFeedClient`, `WorkspaceClient`, shared design tokens, API
+routes, domain logic, or storage logic. It is implemented on this branch
+and remains limited to the reviewed UI-3H scope; it has not been merged.

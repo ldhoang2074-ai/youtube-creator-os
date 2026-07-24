@@ -64,7 +64,7 @@ export function SaveResearchButton({ inputs, result }: SaveResearchButtonProps) 
       <button
         type="button"
         onClick={handleStartEditing}
-        className="self-start rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-900"
+        className="self-start rounded-ui-control border border-ui-border bg-ui-panel px-ui-4 py-ui-2 text-ui-body-sm font-semibold text-ui-text-secondary outline-none transition-colors hover:bg-ui-surface-muted hover:text-ui-text focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-bg"
       >
         Save this research
       </button>
@@ -73,10 +73,10 @@ export function SaveResearchButton({ inputs, result }: SaveResearchButtonProps) 
 
   if (state === "editing") {
     return (
-      <div className="flex flex-col gap-2 rounded-md border border-zinc-200 p-3 dark:border-zinc-800">
+      <div className="flex min-w-0 flex-col gap-ui-2 rounded-ui-panel border border-ui-border bg-ui-panel p-ui-4">
         <label
           htmlFor="workspace-session-name"
-          className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          className="text-ui-body-sm font-medium text-ui-text"
         >
           Name this research (optional)
         </label>
@@ -86,24 +86,24 @@ export function SaveResearchButton({ inputs, result }: SaveResearchButtonProps) 
           value={name}
           onChange={(event) => setName(event.target.value)}
           maxLength={80}
-          className="rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-500 dark:border-zinc-700 dark:bg-zinc-900"
+          className="min-w-0 rounded-ui-control border border-ui-border bg-ui-surface-muted px-ui-3 py-ui-2 text-ui-body text-ui-text outline-none focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-panel"
         />
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="text-ui-body-sm text-ui-text-muted">
           Saved research stays only in this browser. It will not appear on other
           devices, and clearing browser data will remove it.
         </p>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-ui-2">
           <button
             type="button"
             onClick={handleSave}
-            className="rounded-md bg-foreground px-3 py-1.5 text-sm font-medium text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc]"
+            className="rounded-ui-control bg-ui-accent px-ui-3 py-ui-2 text-ui-body-sm font-semibold text-ui-text transition-colors hover:bg-ui-accent-hover focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-panel"
           >
             Save
           </button>
           <button
             type="button"
             onClick={handleCancel}
-            className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm dark:border-zinc-700"
+            className="rounded-ui-control border border-ui-border px-ui-3 py-ui-2 text-ui-body-sm text-ui-text-secondary outline-none transition-colors hover:bg-ui-surface-muted hover:text-ui-text focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-panel"
           >
             Cancel
           </button>
@@ -114,17 +114,24 @@ export function SaveResearchButton({ inputs, result }: SaveResearchButtonProps) 
 
   if (state === "saving") {
     return (
-      <p role="status" className="text-sm text-zinc-500 dark:text-zinc-400">
-        Saving...
+      <p role="status" className="flex items-center gap-ui-2 text-ui-body-sm text-ui-text-secondary">
+        <span
+          aria-hidden="true"
+          className="size-4 shrink-0 animate-spin rounded-ui-pill border-2 border-ui-border border-t-ui-accent"
+        />
+        <span>Saving...</span>
       </p>
     );
   }
 
   if (state === "saved") {
     return (
-      <p role="status" className="text-sm text-zinc-700 dark:text-zinc-300">
+      <p role="status" className="text-ui-body-sm text-ui-text-secondary">
         Saved.{" "}
-        <Link href="/workspace" className="underline underline-offset-2">
+        <Link
+          href="/workspace"
+          className="rounded-sm text-ui-accent underline underline-offset-2 outline-none transition-colors hover:text-ui-accent-hover focus-visible:ring-2 focus-visible:ring-ui-focus"
+        >
           View in Research Workspace
         </Link>
       </p>
@@ -132,14 +139,14 @@ export function SaveResearchButton({ inputs, result }: SaveResearchButtonProps) 
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <p role="alert" className="text-sm text-red-700 dark:text-red-300">
+    <div className="flex min-w-0 flex-col gap-ui-2 rounded-ui-control border border-ui-danger/40 bg-ui-danger/10 p-ui-3">
+      <p role="alert" className="text-ui-body-sm text-ui-danger">
         {errorMessage}
       </p>
       <button
         type="button"
         onClick={handleStartEditing}
-        className="self-start text-sm text-zinc-700 underline underline-offset-2 dark:text-zinc-300"
+        className="self-start rounded-sm text-ui-body-sm text-ui-danger underline underline-offset-2 outline-none transition-colors hover:text-ui-danger/80 focus-visible:ring-2 focus-visible:ring-ui-focus"
       >
         Try again
       </button>
