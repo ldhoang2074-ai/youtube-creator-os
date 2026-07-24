@@ -46,7 +46,15 @@ normalizes transcript domain documents, provides `POST /api/transcript` and
 the `/transcript` page, renders timestamped transcript segments, and downloads
 UTF-8 BOM TXT files containing timestamped segment lines only) is complete and
 merged. G2C does not include AI analysis or summarization, a database,
-authentication, persistence, or a transcript language selector. YouTube Data API access goes through `lib/youtube/request.ts`; the YouTube API
+authentication, persistence, or a transcript language selector. G2D
+(Deterministic Transcript Chunking Foundation: pure provider-agnostic greedy
+chunking in `lib/transcript/chunk-transcript.ts`, explicit positive safe-integer
+`maxCharacters`, source-order whole-segment chunks joined with exactly `\n`,
+immutable defensive-copy output, and no segment splitting, overlapping chunks,
+trimming, sorting, tokenization, AI, API/UI/database/provider changes, or new
+dependency)
+is complete on the current branch and awaits review and merge. YouTube Data API
+access goes through `lib/youtube/request.ts`; the YouTube API
 key remains server-only and is sent through the `x-goog-api-key` header, never
 in the URL. Supadata transcript access goes through the server-only transcript
 provider, and Supadata credentials are never exposed to client code. No database
@@ -58,8 +66,8 @@ ever called when the user explicitly runs or re-runs an analysis (from
 from `/workspace` followed by the user clicking "Find opportunities"
 themselves) — never automatically.
 
-Not yet implemented: transcript chunking, transcript AI analysis or
-summarization, transcript language selector, Supabase/database integration,
+Not yet implemented: transcript AI analysis or summarization, transcript
+language selector, Supabase/database integration,
 authentication, cloud persistence/sync, ongoing watchlist tracking, time-series
 growth tracking, Content Gap engine, Idea Generator, AI API, caching, rate
 limiting, deployment, and a Chrome extension. Do not start any of these until a
