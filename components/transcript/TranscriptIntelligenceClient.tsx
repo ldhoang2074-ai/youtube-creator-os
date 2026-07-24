@@ -192,15 +192,18 @@ export function TranscriptIntelligenceClient() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+    <div className="flex min-w-0 flex-col gap-ui-6">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-ui-3 rounded-ui-panel border border-ui-border bg-ui-panel p-ui-4 sm:p-ui-6"
+      >
         <label
           htmlFor="transcript-input"
-          className="text-sm font-medium text-zinc-900 dark:text-zinc-100"
+          className="text-ui-body-sm font-medium text-ui-text"
         >
           YouTube video URL or ID
         </label>
-        <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="flex flex-col gap-ui-3 sm:flex-row sm:items-center">
           <input
             id="transcript-input"
             type="text"
@@ -209,25 +212,33 @@ export function TranscriptIntelligenceClient() {
             placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
             disabled={status === "loading"}
             aria-describedby="transcript-input-help"
-            className="min-w-0 flex-1 rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-500 focus:ring-2 focus:ring-zinc-300 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:focus:border-zinc-500 dark:focus:ring-zinc-700"
+            className="min-w-0 flex-1 rounded-ui-control border border-ui-border bg-ui-surface-muted px-ui-3 py-ui-2 text-ui-body text-ui-text outline-none placeholder:text-ui-text-muted focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-panel disabled:cursor-not-allowed disabled:opacity-50"
           />
           <button
             type="submit"
             disabled={status === "loading"}
-            className="rounded-md bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors hover:bg-[#383838] disabled:opacity-50 dark:hover:bg-[#ccc]"
+            className="w-full rounded-ui-control bg-ui-accent px-ui-4 py-ui-2 text-ui-body-sm font-semibold text-ui-text transition-colors hover:bg-ui-accent-hover focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-panel disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           >
             {status === "loading" ? "Fetching transcript..." : "Fetch transcript"}
           </button>
         </div>
-        <p id="transcript-input-help" className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p id="transcript-input-help" className="text-ui-body-sm text-ui-text-muted">
           Supports YouTube watch URLs, youtu.be URLs, Shorts URLs, and raw 11-character video IDs.
         </p>
       </form>
 
       {status === "loading" ? (
-        <p role="status" aria-live="polite" className="text-sm text-zinc-600 dark:text-zinc-300">
-          Fetching transcript...
-        </p>
+        <div
+          role="status"
+          aria-live="polite"
+          className="flex items-center gap-ui-3 rounded-ui-panel border border-ui-border bg-ui-panel p-ui-4 text-ui-body-sm text-ui-text-secondary sm:p-ui-6"
+        >
+          <span
+            aria-hidden="true"
+            className="size-5 shrink-0 animate-spin rounded-ui-pill border-2 border-ui-border border-t-ui-accent"
+          />
+          <span>Fetching transcript...</span>
+        </div>
       ) : null}
 
       {status === "error" && feedbackMessage ? (
@@ -235,7 +246,7 @@ export function TranscriptIntelligenceClient() {
           ref={errorRef}
           role="alert"
           tabIndex={-1}
-          className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-700 outline-none focus:ring-2 focus:ring-red-400 dark:bg-red-900/20 dark:text-red-300"
+          className="rounded-ui-panel border border-ui-danger/40 bg-ui-danger/10 px-ui-4 py-ui-3 text-ui-body-sm text-ui-danger outline-none focus-visible:ring-2 focus-visible:ring-ui-focus"
         >
           {feedbackMessage}
         </div>
@@ -247,10 +258,10 @@ export function TranscriptIntelligenceClient() {
           role="status"
           aria-live="polite"
           tabIndex={-1}
-          className="rounded-md border border-zinc-200 bg-zinc-50 px-4 py-5 outline-none focus:ring-2 focus:ring-zinc-400 dark:border-zinc-800 dark:bg-zinc-900/50"
+          className="rounded-ui-panel border border-dashed border-ui-border bg-ui-panel px-ui-4 py-ui-5 outline-none focus-visible:ring-2 focus-visible:ring-ui-focus"
         >
-          <h2 className="font-semibold text-zinc-950 dark:text-zinc-50">{emptyHeading}</h2>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{feedbackMessage}</p>
+          <h2 className="font-semibold text-ui-text">{emptyHeading}</h2>
+          <p className="mt-ui-1 text-ui-body-sm text-ui-text-secondary">{feedbackMessage}</p>
         </div>
       ) : null}
 
@@ -260,9 +271,9 @@ export function TranscriptIntelligenceClient() {
           role="region"
           aria-label="Transcript result"
           tabIndex={-1}
-          className="outline-none focus:ring-2 focus:ring-zinc-400"
+          className="flex min-w-0 flex-col gap-ui-4 outline-none focus-visible:ring-2 focus-visible:ring-ui-focus"
         >
-          <div className="mb-4 flex justify-end">
+          <div className="flex flex-col gap-ui-3 sm:flex-row sm:items-center sm:justify-end">
             <TranscriptDownloadButton transcript={transcript} />
           </div>
           <TranscriptSegmentList transcript={transcript} />
