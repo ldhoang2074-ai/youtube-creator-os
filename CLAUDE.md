@@ -145,28 +145,59 @@ accessibility roles and dialog-focus behavior. It does not add sorting,
 filtering, search, or pagination, and does not change the outlier algorithm,
 the 2× threshold, or any type/domain model. UI-3D is complete and merged.
 
-The current implementation stage is UI-3E — Workspace visual redesign.
-UI-3E applies the existing dark semantic design system to the `/workspace`
-page frame (`max-w-[1600px]`, matching the other redesigned product pages),
-the "saved on this device only" explanation panel, the loading/
-storage-unavailable/skipped/empty states, each saved-session card, the
-two-step delete confirmation, the expanded snapshot content wrappers, and
-`WorkspaceVideoCard`'s own "View details" action. Saved-session cards gained
-`aria-expanded`/`aria-controls` on the session-name toggle and a semantic
-border/surface treatment while expanded; these are additive accessibility
-attributes and a visual state only, not new behavior. UI-3E preserves
-`useSyncExternalStore`, its stable `SERVER_SNAPSHOT` and
-`STORAGE_UNAVAILABLE_SNAPSHOT` references, `WORKSPACE_STORAGE_KEY`, the
-cross-tab `storage` event subscription, the same-tab `refreshSnapshot`
-pattern, `handleSelect`/`handleRequestDelete`/`handleConfirmDelete`/
+UI-3E — Workspace visual redesign — applies the existing dark semantic
+design system to the `/workspace` page frame (`max-w-[1600px]`, matching the
+other redesigned product pages), the "saved on this device only"
+explanation panel, the loading/storage-unavailable/skipped/empty states,
+each saved-session card, the two-step delete confirmation, the expanded
+snapshot content wrappers, and `WorkspaceVideoCard`'s own "View details"
+action. Saved-session cards gained `aria-expanded`/`aria-controls` on the
+session-name toggle and a semantic border/surface treatment while expanded;
+these are additive accessibility attributes and a visual state only, not
+new behavior. UI-3E preserves `useSyncExternalStore`, its stable
+`SERVER_SNAPSHOT` and `STORAGE_UNAVAILABLE_SNAPSHOT` references,
+`WORKSPACE_STORAGE_KEY`, the cross-tab `storage` event subscription, the
+same-tab `refreshSnapshot` pattern,
+`handleSelect`/`handleRequestDelete`/`handleConfirmDelete`/
 `handleCancelDelete` and their exact storage/error-mapping behavior,
 selected-session and selected-video state, `sessions.map(...)` and saved
 item ordering (no sorting, filtering, grouping, search, or pagination),
 `buildOpportunitiesHref`'s repeated `channel` query parameters,
 `prefetch={false}` on the Opportunity Feed link, `analyzeTitlePatterns`,
-`TitlePatternPanel`, `VideoDetailDialog`, and all current
-data/domain types and storage functions in `lib/workspace/*`. It does not
-restyle `VideoCardBase`, `TitlePatternPanel`, or `VideoDetailDialog`
-themselves, and does not add a database, authentication, cloud sync, API
-calls, autosave, or new dependencies. It is implemented on this branch and
-remains limited to the reviewed UI-3E scope; it has not been merged.
+`TitlePatternPanel`, `VideoDetailDialog`, and all current data/domain types
+and storage functions in `lib/workspace/*`. It does not restyle
+`VideoCardBase`, `TitlePatternPanel`, or `VideoDetailDialog` themselves, and
+does not add a database, authentication, cloud sync, API calls, autosave,
+or new dependencies. UI-3E is complete and merged.
+
+The current implementation stage is UI-3F — Transcript visual redesign.
+UI-3F applies the existing dark semantic design system to the `/transcript`
+page frame (`max-w-[1600px]`), the transcript request form, the
+loading/error/empty (transcript-not-found / transcript-unavailable)
+states, the successful result container and its download-action layout,
+`TranscriptSegmentList` (heading, Language/Generation metadata rendered as
+semantic pill badges, and each segment row with a semantic timestamp pill
+and hover state), and `TranscriptDownloadButton`'s visible button styling
+only. UI-3F preserves `DRAFT_STORAGE_KEY` and
+`usePersistentDraft(DRAFT_STORAGE_KEY)`, all `Status` values and state
+variables, the runtime response validators
+(`isTranscriptDocument`/`isTranscriptSuccessBody`/`getSafeApiError`), the
+`handleSubmit` duplicate-submit guard, `input.trim()` and empty-input
+validation, the `POST /api/transcript` request (method, `content-type`,
+`body: JSON.stringify({ input: trimmedInput })`), every existing error and
+empty-state message, the `TRANSCRIPT_NOT_FOUND`/`TRANSCRIPT_UNAVAILABLE`
+mappings, all state transitions, `errorRef`/`emptyRef`/`resultRef` and their
+`useEffect` focus management, `role="status"`/`role="alert"`/
+`aria-live="polite"`/`role="region"`/`aria-label="Transcript result"`/
+`tabIndex={-1}`, `transcript.segments.map(...)` source order (no sorting,
+filtering, grouping, deduplication, merging, or pagination of segments),
+`formatTranscriptTimestamp`, the exact "Manual"/"Auto-generated"/"Unknown"
+generation labels, `whitespace-pre-wrap`/`min-w-0`/`break-words` text
+protections, and `TranscriptDownloadButton`'s `handleDownload` behavior
+(UTF-8 BOM, Blob type, object URL creation/revocation, temporary anchor
+append/click/remove, generated filename). It does not add a language or
+provider selector, database, authentication, cloud sync, new API requests,
+autosave beyond the existing draft hook, sorting, filtering, search,
+pagination, transcript editing, or transcript summarization. It is
+implemented on this branch and remains limited to the reviewed UI-3F scope;
+it has not been merged.
