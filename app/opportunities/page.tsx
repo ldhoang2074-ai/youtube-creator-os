@@ -10,17 +10,17 @@ export default async function OpportunitiesPage({ searchParams }: OpportunitiesP
   const initialInputs = parseChannelQuery(resolvedSearchParams.channel);
 
   return (
-    <div className="flex w-full max-w-5xl flex-col gap-6">
-      <div>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          Videos in the analyzed recent set that reached at least 2× their
-          channel&apos;s median views. Each channel analyzes only its 25 most
-          recent videos. This reflects only the analyzed set and does not
-          track change over time.
+    <div className="flex w-full max-w-[1600px] flex-col gap-ui-6">
+      <div className="rounded-ui-panel border border-ui-border bg-ui-panel p-ui-4 text-ui-body-sm text-ui-text-secondary sm:p-ui-6">
+        <p>
+          Videos that reached at least 2× their own channel&apos;s recent
+          median views, pooled across the channels analyzed below. Each
+          channel only analyzes its 25 most recent videos, so this reflects a
+          snapshot of that analyzed set — not growth or change over time.
         </p>
-        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-          Outlier multiplier is measured against each channel&apos;s own
-          recent median, not as an absolute comparison between channels.
+        <p className="mt-ui-2 text-ui-text-muted">
+          The outlier multiplier compares each video only against its own
+          channel&apos;s recent median, not against other channels.
         </p>
       </div>
       <OpportunityFeedClient initialInputs={initialInputs} />

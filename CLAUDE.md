@@ -107,11 +107,11 @@ semantic dark UI tokens, preserving the existing `POST /api/compare` request,
 validation, result ordering, data contract, accessibility roles, and
 business behavior.
 
-The current implementation stage is UX-1 — Persistent input drafts. UX-1
-auto-saves the raw text typed into the Analyzer, Compare, Opportunity Feed,
-and Transcript input fields to `localStorage` via a shared
-`usePersistentDraft` hook (`lib/drafts/use-persistent-draft.ts` and
-`lib/drafts/storage.ts`), namespaced per page under
+UX-1 — Persistent input drafts — auto-saves the raw text typed into the
+Analyzer, Compare, Opportunity Feed, and Transcript input fields to
+`localStorage` via a shared `usePersistentDraft` hook
+(`lib/drafts/use-persistent-draft.ts` and `lib/drafts/storage.ts`),
+namespaced per page under
 `youtube-creator-os:draft:{analyzer,compare,opportunities,transcript}:v1`,
 and restores the draft when the page is revisited or reloaded. Clearing a
 field removes its stored key. On the Opportunity Feed page, `initialInputs`
@@ -121,7 +121,29 @@ client: the stored draft is read through `useSyncExternalStore` with an
 SSR/hydration-safe server snapshot, while writing or clearing the stored
 draft happens inside a `useEffect`. Storage errors are handled so the input
 experience keeps working regardless of storage availability. UX-1 does not
-submit forms, call any
-API, or persist analysis/transcript results — only the raw input text. It is
-implemented on this branch and remains limited to the reviewed UX-1 scope;
-it has not been merged.
+submit forms, call any API, or persist analysis/transcript results — only
+the raw input text. UX-1 is complete and merged.
+
+The current implementation stage is UI-3D — Opportunity Feed visual
+redesign. UI-3D applies the existing dark semantic design system to the
+`/opportunities` page frame, input form, loading/error/empty states,
+`ChannelCard`, and the Opportunity Feed results (renamed visually from a
+fixed-width horizontal `<table>` to a responsive `Grid` of cards, still
+exported as `OpportunityFeedTable` to avoid breaking its contract), plus
+`ChannelDetailDialog` (touched beyond the originally listed files because it
+is the only remaining zinc-styled screen reachable from this page — it is
+`ChannelCard`'s own detail view and is used nowhere outside Opportunity
+Feed). The 2× threshold explanation on the page frame was reworded for
+clarity and to state explicitly that it is a snapshot of the analyzed set,
+not a measure of change over time, without altering its meaning. UI-3D
+preserves the existing `POST /api/opportunities` request, 2-5 channel
+validation, runtime response validation, `successfulInputs` closure
+behavior, item ordering, `showThumbnails`/`onViewDetails` props, outlier
+labels and multiplier formatting, the UX-1 persistent draft wiring
+(including `initialInputs` priority), `SaveResearchButton`,
+`TitlePatternPanel`, both detail dialogs, Workspace behavior, and all
+accessibility roles and dialog-focus behavior. It does not add sorting,
+filtering, search, or pagination, and does not change the outlier algorithm,
+the 2× threshold, or any type/domain model. It is implemented on this
+branch and remains limited to the reviewed UI-3D scope; it has not been
+merged.
