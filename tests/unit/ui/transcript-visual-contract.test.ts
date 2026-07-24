@@ -17,6 +17,13 @@ const pageSource = ui3fSources["app/transcript/page.tsx"];
 const clientSource = ui3fSources["components/transcript/TranscriptIntelligenceClient.tsx"];
 const segmentListSource = ui3fSources["components/transcript/TranscriptSegmentList.tsx"];
 const downloadButtonSource = ui3fSources["components/transcript/TranscriptDownloadButton.tsx"];
+const audioUploadSource = readFileSync(
+  resolve(
+    process.cwd(),
+    "components/transcript/AudioTranscriptUploadClient.tsx",
+  ),
+  "utf8",
+);
 
 describe("Transcript visual contract", () => {
   it("uses the semantic dark UI token contract", () => {
@@ -49,6 +56,20 @@ describe("Transcript visual contract", () => {
   it("uses the shared responsive content width", () => {
     expect(pageSource).toContain("max-w-[1600px]");
     expect(pageSource).not.toContain("max-w-4xl");
+  });
+
+  it("renders the YouTube and audio transcript workflows together", () => {
+    expect(pageSource).toContain(
+      'import { AudioTranscriptUploadClient } from "@/components/transcript/AudioTranscriptUploadClient"',
+    );
+    expect(pageSource).toContain("<TranscriptIntelligenceClient />");
+    expect(pageSource).toContain("<AudioTranscriptUploadClient />");
+    expect(audioUploadSource).toContain(
+      'fetch("/api/transcript/audio", {',
+    );
+    expect(audioUploadSource).toContain(
+      'formData.append("file", selectedFile)',
+    );
   });
 
   it("does not reintroduce forced horizontal scrolling", () => {
@@ -189,7 +210,7 @@ describe("Transcript visual contract", () => {
     expect(downloadButtonSource).toContain("URL.revokeObjectURL(objectUrl)");
     expect(downloadButtonSource).toContain("document.body.appendChild(anchor)");
     expect(downloadButtonSource).toContain("anchor.remove()");
-    expect(downloadButtonSource).toContain("createTranscriptDownloadFilename(transcript.videoId)");
+    expect(downloadButtonSource).toContain("createTranscriptDownloadFilename(transcript)");
     expect(downloadButtonSource).toMatch(/<button\s[^>]*>\s*Download TXT\s*<\/button>/);
 
     const buttonCount = (downloadButtonSource.match(/<button/g) ?? []).length;

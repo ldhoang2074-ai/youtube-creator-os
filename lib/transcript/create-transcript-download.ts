@@ -14,6 +14,12 @@ export function createTranscriptDownloadText(
   return text.length === 0 ? "" : `${text}\n`;
 }
 
-export function createTranscriptDownloadFilename(videoId: string): string {
-  return `youtube-transcript-${videoId}.txt`;
+export function createTranscriptDownloadFilename(
+  transcript: TranscriptDocument,
+): string {
+  if (transcript.source === "audio-transcription") {
+    return "audio-transcript.txt";
+  }
+
+  return `youtube-transcript-${transcript.videoId}.txt`;
 }
