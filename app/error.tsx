@@ -7,17 +7,17 @@ interface ErrorPageProps {
 
 export default function ErrorPage({ unstable_retry }: ErrorPageProps) {
   return (
-    <section className="mx-auto flex min-h-64 max-w-xl flex-col items-center justify-center px-6 py-12 text-center">
-      <h2 className="text-xl font-semibold text-zinc-950 dark:text-zinc-50">
+    <section className="mx-auto flex min-h-64 max-w-xl flex-col items-center justify-center gap-ui-2 rounded-ui-panel border border-ui-danger/40 bg-ui-danger/10 px-ui-6 py-12 text-center">
+      <h2 className="text-ui-section font-semibold text-ui-text">
         Something went wrong
       </h2>
-      <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+      <p className="text-ui-body-sm text-ui-text-secondary">
         We could not load this page. Please try again.
       </p>
       <button
         type="button"
         onClick={unstable_retry}
-        className="mt-5 rounded-md bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors hover:bg-[#383838] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-500 dark:hover:bg-[#ccc]"
+        className="mt-ui-3 rounded-ui-control bg-ui-accent px-ui-4 py-ui-2 text-ui-body-sm font-semibold text-ui-text outline-none transition-colors hover:bg-ui-accent-hover focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-bg"
       >
         Try again
       </button>

@@ -170,17 +170,16 @@ and storage functions in `lib/workspace/*`. It does not restyle
 does not add a database, authentication, cloud sync, API calls, autosave,
 or new dependencies. UI-3E is complete and merged.
 
-The current implementation stage is UI-3F — Transcript visual redesign.
-UI-3F applies the existing dark semantic design system to the `/transcript`
-page frame (`max-w-[1600px]`), the transcript request form, the
-loading/error/empty (transcript-not-found / transcript-unavailable)
-states, the successful result container and its download-action layout,
-`TranscriptSegmentList` (heading, Language/Generation metadata rendered as
-semantic pill badges, and each segment row with a semantic timestamp pill
-and hover state), and `TranscriptDownloadButton`'s visible button styling
-only. UI-3F preserves `DRAFT_STORAGE_KEY` and
-`usePersistentDraft(DRAFT_STORAGE_KEY)`, all `Status` values and state
-variables, the runtime response validators
+UI-3F — Transcript visual redesign — applies the existing dark semantic
+design system to the `/transcript` page frame (`max-w-[1600px]`), the
+transcript request form, the loading/error/empty (transcript-not-found /
+transcript-unavailable) states, the successful result container and its
+download-action layout, `TranscriptSegmentList` (heading, Language/
+Generation metadata rendered as semantic pill badges, and each segment row
+with a semantic timestamp pill and hover state), and
+`TranscriptDownloadButton`'s visible button styling only. UI-3F preserves
+`DRAFT_STORAGE_KEY` and `usePersistentDraft(DRAFT_STORAGE_KEY)`, all
+`Status` values and state variables, the runtime response validators
 (`isTranscriptDocument`/`isTranscriptSuccessBody`/`getSafeApiError`), the
 `handleSubmit` duplicate-submit guard, `input.trim()` and empty-input
 validation, the `POST /api/transcript` request (method, `content-type`,
@@ -198,6 +197,33 @@ protections, and `TranscriptDownloadButton`'s `handleDownload` behavior
 append/click/remove, generated filename). It does not add a language or
 provider selector, database, authentication, cloud sync, new API requests,
 autosave beyond the existing draft hook, sorting, filtering, search,
-pagination, transcript editing, or transcript summarization. It is
-implemented on this branch and remains limited to the reviewed UI-3F scope;
+pagination, transcript editing, or transcript summarization. UI-3F is
+complete and merged.
+
+The current implementation stage is UI-3G — Global surfaces visual
+redesign. UI-3G applies the existing dark semantic design system to the
+three remaining global application surfaces: the home/entry screen
+(`app/page.tsx`), the route-level loading fallback (`app/loading.tsx`), and
+the route-level error boundary (`app/error.tsx`). The home screen now uses
+`bg-ui-bg`, `text-ui-text`/`text-ui-text-secondary`, and a `bg-ui-accent`
+pill CTA with `focus-visible:ring-ui-focus`, in place of `zinc-*`, `dark:*`,
+`bg-foreground`/`text-background`, and the hardcoded `#383838`/`#ccc` hover
+colors. The loading fallback keeps its plain semantic text but gains an
+optional CSS-only spinner (`animate-spin`, no dependency, no client-side
+state). The error boundary is now a `rounded-ui-panel` danger surface
+(`border-ui-danger/40 bg-ui-danger/10`) with a `bg-ui-accent` primary retry
+button. UI-3G preserves, verbatim: on the home page, the "YouTube Creator
+OS" heading, the existing description text, the "Get Started" CTA text, and
+`href="/analyzer"`; on the loading fallback, `role="status"`,
+`aria-live="polite"`, and the exact "Loading page..." text; on the error
+boundary, `"use client"`, the `ErrorPageProps` contract
+(`error: Error & { digest?: string }`, `unstable_retry: () => void`), the
+`unstable_retry` callback (not renamed), `type="button"`,
+`onClick={unstable_retry}`, and the exact "Something went wrong" / "We
+could not load this page. Please try again." / "Try again" copy. UI-3G does
+not add API calls, client state, timers, effects, new dependencies, new
+navigation, logging/telemetry, or any new product behavior on any of the
+three surfaces, and does not modify `TitlePatternPanel`, `SaveResearchButton`,
+shared design tokens, API routes, domain logic, or storage logic. It is
+implemented on this branch and remains limited to the reviewed UI-3G scope;
 it has not been merged.
