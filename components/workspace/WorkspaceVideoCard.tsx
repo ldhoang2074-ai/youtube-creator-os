@@ -28,7 +28,7 @@ export function WorkspaceVideoCard({ item, onViewDetails }: WorkspaceVideoCardPr
             type="button"
             aria-label={`View details for ${item.title}`}
             onClick={() => onViewDetails(item)}
-            className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 outline-none hover:bg-zinc-100 focus-visible:ring-2 focus-visible:ring-zinc-900 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:focus-visible:ring-zinc-100"
+            className="w-full rounded-ui-control border border-ui-border bg-ui-panel px-ui-3 py-ui-2 text-ui-body-sm font-semibold text-ui-text-secondary outline-none transition-colors hover:bg-ui-surface-muted hover:text-ui-text focus-visible:ring-2 focus-visible:ring-ui-focus focus-visible:ring-offset-2 focus-visible:ring-offset-ui-panel-elevated"
           >
             View details
           </button>
