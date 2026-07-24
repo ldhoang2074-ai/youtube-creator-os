@@ -27,6 +27,17 @@ export interface TranscriptSegment {
   readonly text: string;
 }
 
+export interface TranscriptChunk {
+  readonly index: number;
+  readonly startSegmentIndex: number;
+  readonly endSegmentIndex: number;
+  readonly startSeconds: number;
+  readonly endSeconds: number;
+  readonly characterCount: number;
+  readonly text: string;
+  readonly segments: readonly TranscriptSegment[];
+}
+
 export interface TranscriptDocumentInput {
   readonly videoId: string;
   readonly languageCode: string;
