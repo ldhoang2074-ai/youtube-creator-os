@@ -161,9 +161,21 @@ describe("createTranscriptDownloadText", () => {
 });
 
 describe("createTranscriptDownloadFilename", () => {
-  it("creates the deterministic video ID filename", () => {
-    expect(createTranscriptDownloadFilename("dQw4w9WgXcQ")).toBe(
-      "youtube-transcript-dQw4w9WgXcQ.txt",
-    );
+  it("creates the deterministic YouTube video ID filename", () => {
+    expect(
+      createTranscriptDownloadFilename(createTranscript()),
+    ).toBe("youtube-transcript-dQw4w9WgXcQ.txt");
+  });
+
+  it("creates a source-aware filename for audio uploads", () => {
+    const transcript: TranscriptDocument = {
+      ...createTranscript(),
+      videoId: "audio-upload",
+      source: "audio-transcription",
+    };
+
+    expect(
+      createTranscriptDownloadFilename(transcript),
+    ).toBe("audio-transcript.txt");
   });
 });

@@ -20,7 +20,7 @@ export function TranscriptDownloadButton({
 
     try {
       const text = createTranscriptDownloadText(transcript);
-      const filename = createTranscriptDownloadFilename(transcript.videoId);
+      const filename = createTranscriptDownloadFilename(transcript);
       const blob = new Blob(["\uFEFF", text], {
         type: "text/plain;charset=utf-8",
       });
